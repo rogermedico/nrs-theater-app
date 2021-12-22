@@ -27,8 +27,9 @@ class ReservationController extends Controller
      */
     public function create()
     {
-        $sessions = Session::all();
-        return view('reservation.create', compact('sessions'));
+        return view('reservation.create', [
+            'sessions' => Session::all()
+        ]);
     }
 
     /**
@@ -55,7 +56,9 @@ class ReservationController extends Controller
                 'column' => $rowColumn[1]
             ]);
         }
-        return view('reservation.create',compact(Session::all()));
+        return view('reservation.create', [
+            'sessions' => Session::all()
+        ]);
     }
 
     /**

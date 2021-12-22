@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ReservationController;
 
@@ -17,4 +18,5 @@ use App\Http\Controllers\ReservationController;
 Route::get('/', function () {
     return view('main');
 });
-Route::resource('/reservation', ReservationController::class);
+Route::resource('reservation', ReservationController::class);
+Route::get('user',[UserController::class,'index'])->name('user.index');
