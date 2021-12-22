@@ -3,12 +3,13 @@
 namespace Database\Factories;
 
 use App\Models\Session;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class ReservationFactory extends Factory
 {
 
-    private static $reservationsAlreadyDone = [];
+    private $reservationsAlreadyDone = [];
     /**
      * Define the model's default state.
      *
@@ -18,8 +19,7 @@ class ReservationFactory extends Factory
     {
         $uniqueSessionRowColumn = $this->assureUniqueSessionRowColumn();
         return [
-            'name' => $this->faker->firstName(),
-            'surname' => $this->faker->lastName(),
+            'user_id' => User::all()->random()->id,
             'session_id' => $uniqueSessionRowColumn['session_id'],
             'row' => $uniqueSessionRowColumn['row'],
             'column' => $uniqueSessionRowColumn['column'],
@@ -32,9 +32,9 @@ class ReservationFactory extends Factory
             $session = Session::all()->random()->id;
             $row = rand(1, env('THEATER_MAX_ROWS'));
             $column = rand(1, env('THEATER_MAX_COLUMNS'));
-        } while(in_array($session . '-' . $row . '-' . $column, ReservationFactory::$reservationsAlreadyDone));
+        } while(in_array($session . '-' . $row . '-' . $column, $this->reservationsAlreadyDone));
 
-        ReservationFactory::$reservationsAlreadyDone[] = $session . '-' . $row . '-' . $column;
+        $this->reservationsAlreadyDone[] = $session . '-' . $row . '-' . $column;
 
         return [
             'session_id' => $session,

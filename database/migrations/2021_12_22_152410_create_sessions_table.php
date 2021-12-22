@@ -17,6 +17,7 @@ class CreateSessionsTable extends Migration
             $table->id();
             $table->string('name');
             $table->timestamp('date');
+            $table->integer('ticket_price');
             $table->timestamps();
         });
     }

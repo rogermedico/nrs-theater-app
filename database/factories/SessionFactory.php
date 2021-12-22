@@ -17,6 +17,7 @@ class SessionFactory extends Factory
         return [
             'name' => $this->faker->company(),
             'date' => $this->faker->dateTimeBetween('now','+ 1 year'),
+            'ticket_price' => $this->faker->numberBetween(10,100)
         ];
     }
 }
