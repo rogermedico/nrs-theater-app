@@ -21,6 +21,7 @@ class CreateReservationsTable extends Migration
             $table->integer('row');
             $table->integer('column');
             $table->timestamps();
+            $table->unique(['session_id','row','column']);
         });
     }
 
