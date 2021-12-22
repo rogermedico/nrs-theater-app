@@ -15,8 +15,7 @@
 {{--    @include('navbar')--}}
 </header>
 <main class="container">
-{{--    @yield('main-content')--}}
-    <p>asdf</p>
+    @yield('main-content')
 </main>
 <script type="text/javascript" src="{{ asset('js/app.js') }}"></script>
 </body>

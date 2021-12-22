@@ -19,8 +19,6 @@ class Session extends Model
         'updated_at',
     ];
 
-
-
     public function reservations()
     {
         return $this->hasMany(Reservation::class);

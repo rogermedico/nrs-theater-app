@@ -10,9 +10,8 @@ class Reservation extends Model
     use HasFactory;
 
     public $fillable = [
-        'name',
-        'surname',
-        'id_session',
+        'user_id',
+        'session_id',
         'row',
         'column',
     ];
