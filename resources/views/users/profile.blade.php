@@ -18,7 +18,7 @@
                     </ul>
                 </div>
             @endif
-            <section>
+            <section class="my-3">
                 <h2>{{__('update personal data')}}</h2>
                 <form class="needs-validation" novalidate method="post" action="{{route('user.auth.profile.make',[auth()->user()])}}">
                     @csrf
@@ -65,12 +65,12 @@
                         </div>
 
                         <div class="me-3 mb-3 text-end">
-                            <button type="submit" class="btn btn-primary">{{ __('Update')}}</button>
+                            <button type="submit" class="btn btn-primary">{{ __('Update user info')}}</button>
                         </div>
                     </div>
                 </form>
             </section>
-            <section>
+            <section class="my-3">
                 <h2>{{__('update password')}}</h2>
                 <form class="needs-validation" novalidate method="post" action="{{route('user.auth.password.make',[auth()->user()])}}">
                     @csrf
@@ -121,19 +121,25 @@
                     </div>
                 </form>
             </section>
-            <section>
-                <h2>{{__('delete account')}}</h2>
-                <form class="needs-validation" novalidate method="post" action="{{route('user.auth.profile.delete',[auth()->user()])}}">
-                    @csrf
-                    @method('delete')
-                    <div class="card">
-
-                        <div class="me-3 mb-3 text-end">
-                            Delete account ? <button type="submit" class="btn btn-danger">{{ __('Update password')}}</button>
+            @if(!auth()->user()->isAdmin())
+                <section class="my-3">
+                    <h2>{{__('delete account')}}</h2>
+                    <form class="needs-validation" novalidate method="post" action="{{route('user.auth.profile.delete',[auth()->user()])}}">
+                        @csrf
+                        @method('delete')
+                        <div class="card">
+                            <div class="card-body ">
+                                <div>
+                                    This action is not reversible, all your data and reservations will be deleted?
+                                </div>
+                                <div class="text-end">
+                                    <button type="submit" class="btn btn-danger">{{ __('Delete account')}}</button>
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                </form>
-            </section>
+                    </form>
+                </section>
+            @endif
         </div>
     </div>
 @endsection
