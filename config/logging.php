@@ -48,6 +48,12 @@ return [
     */
 
     'channels' => [
+
+        'reservations' => [
+            'driver' => 'single',
+            'path' => storage_path('logs/reservations.log')
+        ],
+
         'stack' => [
             'driver' => 'stack',
             'channels' => ['single'],

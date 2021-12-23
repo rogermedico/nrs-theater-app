@@ -18,6 +18,7 @@ use App\Http\Controllers\ReservationController;
 Route::get('/', function () {
     return view('main');
 });
+/** reservation routes */
 Route::resource('reservation', ReservationController::class);
 
 /** user routes */
