@@ -24,13 +24,15 @@ class UpdateUserProfileRequest extends FormRequest
      */
     public function rules()
     {
+        $user = $this->route('user');
+
         return [
             'name' => 'required|string',
             'surname' => 'required|string',
             'email' => [
                 'required',
                 'email',
-                Rule::unique('users','email')->ignore(auth()->user()->id),
+                Rule::unique('users','email')->ignore($user->id),
             ]
         ];
     }

@@ -4,15 +4,7 @@
     <div>
         <h1 class="serif">{{__('login')}}</h1>
         <div class="offset-lg-2 col-lg-8 p-0">
-            @if($errors->any())
-                <div class="alert alert-danger">
-                    <ul class="mb-0">
-                        @foreach ($errors->all() as $error)
-                            <li>{{$error}}</li>
-                        @endforeach
-                    </ul>
-                </div>
-            @endif
+            <x-errors/>
             <form class="needs-validation" novalidate method="POST" action="{{route('user.login')}}">
                 @csrf
                 <div class="card">

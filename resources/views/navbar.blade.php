@@ -21,7 +21,7 @@
                                 Admin
                             </a>
                             <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                <li><a class="dropdown-item" href="#">Manage users</a></li>
+                                <li><a class="dropdown-item" href="{{route('user.index')}}">Manage users</a></li>
                                 <li><a class="dropdown-item" href="#">Manage Reservations</a></li>
                             </ul>
                         </li>

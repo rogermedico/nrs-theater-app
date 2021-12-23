@@ -4,21 +4,8 @@
     <div>
     <h1 class="serif">{{__('profile')}}</h1>
         <div class="offset-lg-2 col-lg-8 p-0">
-            @if(session('message'))
-                <div class='alert alert-success'>
-                    {{session('message')}}
-                </div>
-            @endif
-            @if($errors->any())
-                <div class="alert alert-danger alert-dismissible fade show">
-                    <ul class="mb-0">
-                        @foreach ($errors->all() as $error)
-                            <li>{{$error}}</li>
-                        @endforeach
-                    </ul>
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-            @endif
+            <x-messages/>
+            <x-errors/>
             <section class="my-3">
                 <h2>{{__('update personal data')}}</h2>
                 <form class="needs-validation" novalidate method="post" action="{{route('user.update.profile', $user)}}">
@@ -73,23 +60,25 @@
             </section>
             <section class="my-3">
                 <h2>{{__('update password')}}</h2>
-                <form class="needs-validation" novalidate method="post" action="{{route('user.update.password',[auth()->user()])}}">
+                <form class="needs-validation" novalidate method="post" action="{{route('user.update.password', $user)}}">
                     @csrf
                     @method('put')
                     <div class="card">
                         <div class="card-body">
-                            <div class="mb-3">
-                                <label class="form-label" for="password_old">{{ __('Old password')}}</label>
-                                <input
-                                    type="password"
-                                    class="form-control"
-                                    id="password_old"
-                                    placeholder="{{__('old password')}}"
-                                    name="password_old"
-                                    minlength="8"
-                                    required
-                                >
-                            </div>
+                            @if(!auth()->user()->isAdmin() || auth()->user()->id === $user->id)
+                                <div class="mb-3">
+                                    <label class="form-label" for="password_old">{{ __('Old password')}}</label>
+                                    <input
+                                        type="password"
+                                        class="form-control"
+                                        id="password_old"
+                                        placeholder="{{__('old password')}}"
+                                        name="password_old"
+                                        minlength="8"
+                                        required
+                                    >
+                                </div>
+                            @endif
                             <div class="mb-3">
                                 <label class="form-label" for="password">{{ __('New password')}}</label>
                                 <input
@@ -125,7 +114,7 @@
             @if(!auth()->user()->isAdmin())
                 <section class="my-3">
                     <h2>{{__('delete account')}}</h2>
-                    <form class="needs-validation" novalidate method="post" action="{{route('user.destroy',[auth()->user()])}}">
+                    <form class="needs-validation" novalidate method="post" action="{{route('user.destroy', auth()->user())}}">
                         @csrf
                         @method('delete')
                         <div class="card">

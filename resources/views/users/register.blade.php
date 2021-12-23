@@ -4,17 +4,7 @@
     <div>
     <h1 class="serif">{{__('register')}}</h1>
         <div class="offset-lg-2 col-lg-8 p-0">
-            @if($errors->any())
-                <div class="alert alert-danger alert alert-danger alert-dismissible fade show">
-                    <ul class="mb-0">
-                        @foreach ($errors->all() as $error)
-                            <li>{{$error}}</li>
-                        @endforeach
-                    </ul>
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-            @endif
-
+            <x-errors/>
             <form class="needs-validation" novalidate method="POST" action="{{route('user.store')}}">
                 @csrf
                 <div class="card">
@@ -81,7 +71,7 @@
 
                     <div class="d-flex flex-row mb-3">
                         <div class="flex-grow-1 ms-3">
-                            <a class="btn btn-danger" href="{{route('reservation.create')}}">{{ __('Cancel')}}</a>
+                            <a class="btn btn-outline-danger" href="{{route('reservation.create')}}">{{ __('Cancel')}}</a>
                         </div>
                         <div class="flex-grow-1 me-3 text-end">
                             <button type="submit" class="btn btn-primary">{{ __('Register')}}</button>

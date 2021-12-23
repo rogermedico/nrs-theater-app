@@ -19,18 +19,20 @@ class UserController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth')->only(['edit','destroy','logout']);
+        $this->middleware('auth')->only(['index','edit','destroy','logout']);
         $this->middleware('guest')->only(['create','store']);
     }
 
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View|\Illuminate\Http\Response
      */
     public function index()
     {
-        //
+        return view('admin.users', [
+            'users' => User::all()
+        ]);
     }
 
     /**
@@ -55,17 +57,6 @@ class UserController extends Controller
         Auth::login($user);
         $request->session()->regenerate();
         return redirect()->route('reservation.create');
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
     }
 
     /**
@@ -134,12 +125,19 @@ class UserController extends Controller
             return redirect()->route('reservation.create');
         }
 
-        Auth::logout();
-        $request->session()->invalidate();
-        $request->session()->regenerateToken();
-        $user->delete();
+        /** user deleting his own account */
+        if(auth()->user() === $user)
+        {
+            Auth::logout();
+            $request->session()->invalidate();
+            $request->session()->regenerateToken();
+            $user->delete();
+            return redirect()->route('reservation.create');
+        }
 
-        return redirect()->route('reservation.create');
+        $user->delete();
+        return back()->with('message', __('User deleted'));
+
 
     }
 

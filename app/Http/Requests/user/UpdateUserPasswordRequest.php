@@ -23,9 +23,15 @@ class UpdateUserPasswordRequest extends FormRequest
      */
     public function rules()
     {
-        return [
-            'password_old' => 'required|min:8',
+        $rules = [
             'password' => 'required|min:8|confirmed',
         ];
+
+        if (!auth()->user()->isAdmin() || $this->route('user') === auth()->user())
+        {
+            $rules['password_old'] = 'required|min:8';
+        }
+
+        return $rules;
     }
 }
