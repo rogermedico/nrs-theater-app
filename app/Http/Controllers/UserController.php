@@ -10,7 +10,6 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
-use Illuminate\Support\Facades\Log;
 
 class UserController extends Controller
 {
@@ -160,15 +159,10 @@ class UserController extends Controller
      */
     public function login(LoginUserRequest $request)
     {
-
-        Log::channel('reservations')->info('User with id= logged in');
-
         if (Auth::attempt($request->validated())) {
             $request->session()->regenerate();
             return redirect()->route('reservation.create');
         }
-
-
 
         return back()->withErrors([
             'email' => __('The provided credentials do not match our records.'),

@@ -7,6 +7,7 @@ use App\Models\Reservation;
 use App\Models\Session;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class ReservationController extends Controller
 {
@@ -40,6 +41,8 @@ class ReservationController extends Controller
      */
     public function store(ReservationRequest $request)
     {
+        Log::channel('reservations')->info('User with id= logged in');
+
         $validatedData = $request->validated();
         $user = User::factory()->create([
             'name' => $validatedData['name'],
