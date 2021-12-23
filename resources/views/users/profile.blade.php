@@ -1,0 +1,140 @@
+@extends('main')
+
+@section('main-content')
+    <div>
+    <h1 class="serif">{{__('profile')}}</h1>
+        <div class="offset-lg-2 col-lg-8 p-0">
+            @if(session('message'))
+                <div class='alert alert-success'>
+                    {{session('message')}}
+                </div>
+            @endif
+            @if($errors->any())
+                <div class="alert alert-danger">
+                    <ul class="mb-0">
+                        @foreach ($errors->all() as $error)
+                            <li>{{$error}}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
+            <section>
+                <h2>{{__('update personal data')}}</h2>
+                <form class="needs-validation" novalidate method="post" action="{{route('user.auth.profile.make',[auth()->user()])}}">
+                    @csrf
+                    @method('put')
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="mb-3">
+                                <label class="sr-only" for="name">{{ __('Name')}}</label>
+                                <input
+                                    type="text"
+                                    class="form-control"
+                                    id="name"
+                                    placeholder="{{ __('John')}}"
+                                    name="name"
+                                    required
+                                    value="{{auth()->user()->name}}"
+                                >
+                            </div>
+                            <div class="mb-3">
+                                <label class="sr-only" for="surname">{{ __('Surname')}}</label>
+                                <input
+                                    type="text"
+                                    class="form-control"
+                                    id="surname"
+                                    placeholder="{{ __('Smith')}}"
+                                    name="surname"
+                                    required
+                                    value="{{auth()->user()->surname}}"
+                                >
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label" for="email">{{ __('Email')}}</label>
+                                <input
+                                    type="email"
+                                    class="form-control"
+                                    id="email"
+                                    placeholder="{{__('example@gmail.com')}}"
+                                    name="email"
+                                    pattern="^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)+$"
+                                    required
+                                    value="{{auth()->user()->email}}"
+                                >
+                            </div>
+                        </div>
+
+                        <div class="me-3 mb-3 text-end">
+                            <button type="submit" class="btn btn-primary">{{ __('Update')}}</button>
+                        </div>
+                    </div>
+                </form>
+            </section>
+            <section>
+                <h2>{{__('update password')}}</h2>
+                <form class="needs-validation" novalidate method="post" action="{{route('user.auth.password.make',[auth()->user()])}}">
+                    @csrf
+                    @method('put')
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="mb-3">
+                                <label class="form-label" for="password_old">{{ __('Old password')}}</label>
+                                <input
+                                    type="password"
+                                    class="form-control"
+                                    id="password_old"
+                                    placeholder="{{__('old password')}}"
+                                    name="password_old"
+                                    minlength="8"
+                                    required
+                                >
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label" for="password">{{ __('New password')}}</label>
+                                <input
+                                    type="password"
+                                    class="form-control"
+                                    id="password"
+                                    placeholder="{{__('new password')}}"
+                                    name="password"
+                                    minlength="8"
+                                    required
+                                >
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label" for="password_confirmation">{{ __('Confirm new password')}}</label>
+                                <input
+                                    type="password"
+                                    class="form-control"
+                                    id="password_confirmation"
+                                    placeholder="{{__('new password')}}"
+                                    name="password_confirmation"
+                                    minlength="8"
+                                    required
+                                >
+                            </div>
+                        </div>
+
+                        <div class="me-3 mb-3 text-end">
+                            <button type="submit" class="btn btn-primary">{{ __('Update password')}}</button>
+                        </div>
+                    </div>
+                </form>
+            </section>
+            <section>
+                <h2>{{__('delete account')}}</h2>
+                <form class="needs-validation" novalidate method="post" action="{{route('user.auth.profile.delete',[auth()->user()])}}">
+                    @csrf
+                    @method('delete')
+                    <div class="card">
+
+                        <div class="me-3 mb-3 text-end">
+                            Delete account ? <button type="submit" class="btn btn-danger">{{ __('Update password')}}</button>
+                        </div>
+                    </div>
+                </form>
+            </section>
+        </div>
+    </div>
+@endsection
+

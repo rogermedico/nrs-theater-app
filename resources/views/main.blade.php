@@ -12,7 +12,7 @@
 </head>
 <body>
 <header>
-{{--    @include('navbar')--}}
+    @include('navbar')
 </header>
 <main class="container">
     @yield('main-content')
