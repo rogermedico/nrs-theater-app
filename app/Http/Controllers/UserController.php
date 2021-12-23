@@ -3,17 +3,26 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\user\LoginUserRequest;
-use App\Http\Requests\user\RegisterUserRequest;
+use App\Http\Requests\user\StoreUserRequest;
 use App\Http\Requests\user\UpdateUserPasswordRequest;
 use App\Http\Requests\user\UpdateUserProfileRequest;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
-use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
+    /**
+     * Constructor, apply middleware auth to specific routes
+     *
+     */
+    public function __construct()
+    {
+        $this->middleware('auth')->only(['edit','destroy','logout']);
+        $this->middleware('guest')->only(['create','store']);
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -27,22 +36,25 @@ class UserController extends Controller
     /**
      * Show the form for creating a new resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View|\Illuminate\Http\RedirectResponse
      */
     public function create()
     {
-        //
+        return view('users.register');
     }
 
     /**
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\RedirectResponse
      */
-    public function store(Request $request)
+    public function store(StoreUserRequest $request)
     {
-        //
+        $user = User::create($request->validated());
+        Auth::login($user);
+        $request->session()->regenerate();
+        return redirect()->route('reservation.create');
     }
 
     /**
@@ -60,11 +72,17 @@ class UserController extends Controller
      * Show the form for editing the specified resource.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View|\Illuminate\Http\RedirectResponse
      */
-    public function edit($id)
+    public function edit(User $user)
     {
-        //
+        if (Gate::denies('edit', $user))
+        {
+            return redirect()->route('user.edit',auth()->user());
+        }
+        return view('users.profile', [
+            'user' => $user
+        ]);
     }
 
     /**
@@ -125,16 +143,22 @@ class UserController extends Controller
 
     }
 
+    /**
+     * Show the form to login users.
+     *
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View|\Illuminate\Http\RedirectResponse
+     */
     public function loginShow()
     {
-        if (auth()->user())
-        {
-            return redirect()->route('reservation.create');
-        }
-
         return view('users.login');
     }
 
+    /**
+     * Logs in the user if the credentials are correct
+     *
+     * @param LoginUserRequest $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function login(LoginUserRequest $request)
     {
         if (Auth::attempt($request->validated())) {
@@ -147,25 +171,13 @@ class UserController extends Controller
         ]);
     }
 
-    public function registerShow()
-    {
-        if (auth()->user())
-        {
-            return redirect()->route('reservation.create');
-        }
 
-        return view('users.register');
-    }
-
-    public function register(RegisterUserRequest $request)
-    {
-        $user = User::create($request->validated());
-        Auth::login($user);
-        $request->session()->regenerate();
-        return redirect()->route('reservation.create');
-
-    }
-
+    /**
+     * Logs out the logged in user.
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function logout(Request $request)
     {
         Auth::logout();

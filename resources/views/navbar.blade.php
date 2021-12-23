@@ -13,7 +13,7 @@
                         <a class="nav-link" href="#">My Reservations</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{{route('user.auth.profile.show')}}">{{__('Profile')}}</a>
+                        <a class="nav-link" href="{{route('user.edit',auth()->user())}}">{{__('Profile')}}</a>
                     </li>
                     @if(auth()->user()->isAdmin())
                         <li class="nav-item dropdown">
@@ -38,11 +38,11 @@
                 <span class="navbar-brand d-md-none">
                     {{auth()->user()->name}} {{auth()->user()->surname}}
                 </span>
-                <a class="btn btn-outline-danger" href="{{route('user.auth.logout.make')}}">Logout</a>
+                <a class="btn btn-outline-danger" href="{{route('user.logout')}}">Logout</a>
             @endauth
             @guest
-                <a class="btn btn-outline-success me-3" href="{{route('user.auth.register.show')}}">Register</a>
-                <a class="btn btn-success" href="{{route('user.auth.login.show')}}">Login</a>
+                <a class="btn btn-outline-success me-3" href="{{route('user.create')}}">Register</a>
+                <a class="btn btn-success" href="{{route('user.login.show')}}">Login</a>
             @endguest
 
         </div>

@@ -9,6 +9,16 @@ class UserPolicy
 {
     use HandlesAuthorization;
 
+    public function edit(User $user, User $editedUser)
+    {
+        if($user->isAdmin())
+        {
+            return true;
+        }
+
+        return $user->id === $editedUser->id;
+    }
+
     public function updateProfile(User $user, User $updatedUser)
     {
         if($user->isAdmin())
@@ -29,13 +39,13 @@ class UserPolicy
         return $user->id === $updatedUser->id;
     }
 
-    public function delete(User $user, User $updatedUser)
+    public function delete(User $user, User $userToDelete)
     {
-        if($user->isAdmin())
+        if($user->isAdmin() && !$userToDelete->isAdmin())
         {
             return true;
         }
 
-        return $user->id === $updatedUser->id;
+        return $user->id === $userToDelete->id;
     }
 }

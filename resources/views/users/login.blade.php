@@ -13,7 +13,7 @@
                     </ul>
                 </div>
             @endif
-            <form class="needs-validation" novalidate method="POST" action="{{route('user.auth.login.make')}}">
+            <form class="needs-validation" novalidate method="POST" action="{{route('user.login')}}">
                 @csrf
                 <div class="card">
                     <div class="card-body">

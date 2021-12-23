@@ -10,17 +10,18 @@
                 </div>
             @endif
             @if($errors->any())
-                <div class="alert alert-danger">
+                <div class="alert alert-danger alert-dismissible fade show">
                     <ul class="mb-0">
                         @foreach ($errors->all() as $error)
                             <li>{{$error}}</li>
                         @endforeach
                     </ul>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
             @endif
             <section class="my-3">
                 <h2>{{__('update personal data')}}</h2>
-                <form class="needs-validation" novalidate method="post" action="{{route('user.auth.profile.make',[auth()->user()])}}">
+                <form class="needs-validation" novalidate method="post" action="{{route('user.update.profile', $user)}}">
                     @csrf
                     @method('put')
                     <div class="card">
@@ -34,7 +35,7 @@
                                     placeholder="{{ __('John')}}"
                                     name="name"
                                     required
-                                    value="{{auth()->user()->name}}"
+                                    value="{{$user->name}}"
                                 >
                             </div>
                             <div class="mb-3">
@@ -46,7 +47,7 @@
                                     placeholder="{{ __('Smith')}}"
                                     name="surname"
                                     required
-                                    value="{{auth()->user()->surname}}"
+                                    value="{{$user->surname}}"
                                 >
                             </div>
                             <div class="mb-3">
@@ -59,7 +60,7 @@
                                     name="email"
                                     pattern="^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)+$"
                                     required
-                                    value="{{auth()->user()->email}}"
+                                    value="{{$user->email}}"
                                 >
                             </div>
                         </div>
@@ -72,7 +73,7 @@
             </section>
             <section class="my-3">
                 <h2>{{__('update password')}}</h2>
-                <form class="needs-validation" novalidate method="post" action="{{route('user.auth.password.make',[auth()->user()])}}">
+                <form class="needs-validation" novalidate method="post" action="{{route('user.update.password',[auth()->user()])}}">
                     @csrf
                     @method('put')
                     <div class="card">
@@ -124,7 +125,7 @@
             @if(!auth()->user()->isAdmin())
                 <section class="my-3">
                     <h2>{{__('delete account')}}</h2>
-                    <form class="needs-validation" novalidate method="post" action="{{route('user.auth.profile.delete',[auth()->user()])}}">
+                    <form class="needs-validation" novalidate method="post" action="{{route('user.destroy',[auth()->user()])}}">
                         @csrf
                         @method('delete')
                         <div class="card">

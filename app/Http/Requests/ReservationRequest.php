@@ -29,7 +29,7 @@ class ReservationRequest extends FormRequest
             'email' => 'required|email|unique:users,email',
             'session' => 'required|exists:sessions,id',
             'seats' => 'required|array|min:1',
-            'seats.*' =>'required|string|max:3'
+            'seats.*' =>'required|string'
         ];
     }
 }
