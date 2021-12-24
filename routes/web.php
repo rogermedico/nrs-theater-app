@@ -19,6 +19,7 @@ Route::get('/', function () {
     return view('main');
 });
 /** reservation routes */
+Route::post('reservation/create/second',[ReservationController::class, 'createSecondStep'])->name('reservation.create.second');
 Route::resource('reservation', ReservationController::class);
 
 /** user routes */

@@ -5,7 +5,7 @@
         <h1 class="serif">{{__('reservation')}}</h1>
         <x-messages/>
         <x-errors/>
-        <form class="needs-validation" novalidate method="post" action="{{route('reservation.store')}}">
+        <form class="needs-validation" novalidate method="post" action="{{route('reservation.create.second')}}">
             @csrf
             <div class="card mb-3">
                 <div class="card-body">
@@ -19,6 +19,7 @@
                                 placeholder="{{ __('John')}}"
                                 name="name"
                                 required
+                                value="{{$createReservationFirstStepInfo['name'] ?? null}}"
                             >
                         </div>
                         <div class="mb-3">
@@ -30,6 +31,7 @@
                                 placeholder="{{ __('Smith')}}"
                                 name="surname"
                                 required
+                                value="{{$createReservationFirstStepInfo['surname'] ?? null}}"
                             >
                         </div>
                         <div class="mb-3">
@@ -42,6 +44,7 @@
                                 name="email"
                                 pattern="^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)+$"
                                 required
+                                value="{{$createReservationFirstStepInfo['email'] ?? null}}"
                             >
                         </div>
                         <div class="mb-3">
@@ -54,6 +57,7 @@
                                 name="password"
                                 minlength="8"
                                 required
+                                value="{{$createReservationFirstStepInfo['password'] ?? null}}"
                             >
                         </div>
                         <div class="mb-3">
@@ -66,38 +70,38 @@
                                 name="password_confirmation"
                                 minlength="8"
                                 required
+                                value="{{$createReservationFirstStepInfo['password'] ?? null}}"
                             >
                         </div>
                     @endguest
                     <div class="mb-3">
                         <label class="form-label" for="session">{{__('Session')}}</label>
                             <select class="form-select" name="session" id="session" required>
-                                <option selected value="">{{__('Select Session')}}</option>
+                                <option
+                                    selected
+                                    {{!isset($createReservationFirstStepInfo) ? 'selected' : ''}}
+                                    value=""
+                                >
+                                    {{__('Select Session')}}
+                                </option>
                                 @foreach($sessions as $session)
-                                    <option value="{{$session->id}}">
+                                    <option
+                                        {{
+                                            isset($createReservationFirstStepInfo) && (int) $createReservationFirstStepInfo['session'] === $session->id
+                                            ? 'selected'
+                                            : ''
+                                        }}
+                                        value="{{$session->id}}"
+                                    >
                                         {{$session->name . ' - ' . \Carbon\Carbon::parse($session->date)->format('d/m/Y H:i')}}
                                     </option>
                                 @endforeach
                             </select>
                     </div>
-{{--                @for ($row = 1; $row <= env('THEATER_MAX_ROWS'); $row++)--}}
-{{--                    <div>--}}
-{{--                            @for ($column = 1; $column <= env('THEATER_MAX_COLUMNS'); $column++)--}}
-{{--                            <span class="form-check form-check-inline">--}}
-{{--                                <input id="seat{{$row . '-' . $column}}" class="form-check-input" type="checkbox" name="seats[]" value="{{$row . '-' . $column}}">--}}
-{{--                                <label class="form-check-label" for="seat{{$row . '-' . $column}}">--}}
-{{--                                    {{$row . '-' . $column}}--}}
-{{--                                </label>--}}
-{{--                            </span>--}}
-{{--                    @endfor--}}
-{{--                    </div>--}}
-{{--                @endfor--}}
                     <div class="d-flex flex-row">
-{{--                    <div class="form-group text-center text-md-right">--}}
                         <div class="flex-grow-1 text-end">
-                            <button type="submit" class="btn btn-primary " >{{ __('Next')}}</button>
+                            <button type="submit" class="btn btn-primary">{{ __('Next')}}</button>
                         </div>
-
                     </div>
                 </div>
             </div>

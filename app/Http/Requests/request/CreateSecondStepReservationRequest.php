@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\request;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class ReservationRequest extends FormRequest
+class CreateSecondStepReservationRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,10 +24,6 @@ class ReservationRequest extends FormRequest
     public function rules()
     {
         return [
-            'name' => 'required|string',
-            'surname' => 'required|string',
-            'email' => 'required|email|unique:users,email',
-            'session' => 'required|exists:sessions,id',
             'seats' => 'required|array|min:1',
             'seats.*' =>'required|string'
         ];
