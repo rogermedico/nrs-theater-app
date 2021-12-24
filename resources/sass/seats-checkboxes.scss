@@ -1,0 +1,20 @@
+.taken.seat-check.form-check-input {
+    &:disabled {
+        opacity: initial;
+    }
+    &:checked {
+        background-color: $danger;
+        border-color: $danger;
+    }
+
+}
+
+.seat-check.form-check-input {
+    &:checked {
+        background-color: $success;
+        border-color: $success;
+    }
+    &:checked[type="checkbox"] {
+        background-image: none;
+    }
+}

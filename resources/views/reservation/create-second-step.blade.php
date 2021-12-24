@@ -19,7 +19,11 @@
                                     <span class="form-check form-check-inline mx-2">
                                         <input
                                             id="seat{{$row . '-' . $column}}"
-                                            class="form-check-input"
+                                            @class([
+                                                'form-check-input',
+                                                'seat-check',
+                                                'taken' => in_array($row . '-' . $column, $occupiedSeats)
+                                            ])
                                             type="checkbox" name="seats[]"
                                             value="{{$row . '-' . $column}}"
                                             {{in_array($row . '-' . $column, $occupiedSeats) ? 'disabled checked' : ''}}

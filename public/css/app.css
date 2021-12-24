@@ -11311,3 +11311,19 @@ h1, .h1 {
   background-color: #003f88;
   border-color: #003f88;
 }
+
+.taken.seat-check.form-check-input:disabled {
+  opacity: initial;
+}
+.taken.seat-check.form-check-input:checked {
+  background-color: #dc3545;
+  border-color: #dc3545;
+}
+
+.seat-check.form-check-input:checked {
+  background-color: #198754;
+  border-color: #198754;
+}
+.seat-check.form-check-input:checked[type=checkbox] {
+  background-image: none;
+}

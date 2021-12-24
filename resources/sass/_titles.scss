@@ -1,0 +1,12 @@
+h1,
+h2 {
+    color: $primary;
+    font-family: $font-family-serif;
+}
+
+h1 {
+    margin-bottom: 1rem;
+    @include media-breakpoint-up(md) {
+        font-size: 3.5rem;
+    }
+}
