@@ -7,7 +7,7 @@
         <x-errors/>
         <section class="my-3">
             <h2>{{__('update personal data')}}</h2>
-            <form class="needs-validation" novalidate method="post" action="{{route('user.update.profile', $user)}}">
+            <form class="needs-validation" novalidate method="post" action="{{route('user.update', $user)}}">
                 @csrf
                 @method('put')
                 <div class="card">

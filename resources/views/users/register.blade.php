@@ -6,10 +6,10 @@
         <x-errors/>
         <form class="needs-validation" novalidate method="POST" action="{{route('user.store')}}">
             @csrf
-            <div class="card">
+            <div class="card mb-3">
                 <div class="card-body">
                     <div class="mb-3">
-                        <label class="sr-only" for="name">{{ __('Name')}}</label>
+                        <label class="form-label" for="name">{{ __('Name')}}</label>
                         <input
                             type="text"
                             class="form-control"
@@ -20,7 +20,7 @@
                         >
                     </div>
                     <div class="mb-3">
-                        <label class="sr-only" for="surname">{{ __('Surname')}}</label>
+                        <label class="form-label" for="surname">{{ __('Surname')}}</label>
                         <input
                             type="text"
                             class="form-control"

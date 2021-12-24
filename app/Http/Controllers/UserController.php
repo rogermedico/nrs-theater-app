@@ -19,8 +19,8 @@ class UserController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth')->only(['index','edit','destroy','logout']);
-        $this->middleware('guest')->only(['create','store']);
+        $this->middleware('auth')->only(['index', 'edit', 'update', 'destroy', 'logout']);
+        $this->middleware('guest')->only(['create', 'store']);
     }
 
     /**
@@ -80,10 +80,10 @@ class UserController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
+     * @param  User $user
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function updateProfile(UpdateUserProfileRequest $request, User $user)
+    public function update(UpdateUserProfileRequest $request, User $user)
     {
         if (Gate::denies('updateProfile', $user))
         {

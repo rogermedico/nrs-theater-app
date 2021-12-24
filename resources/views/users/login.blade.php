@@ -6,7 +6,7 @@
         <x-errors/>
         <form class="needs-validation" novalidate method="POST" action="{{route('user.login')}}">
             @csrf
-            <div class="card">
+            <div class="card mb-3">
                 <div class="card-body">
                     <div class="mb-3">
                         <label class="form-label" for="email">{{ __('Email')}}</label>

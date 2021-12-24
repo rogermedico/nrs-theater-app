@@ -7,6 +7,7 @@ use App\Models\Reservation;
 use App\Models\Session;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 
 class ReservationController extends Controller
@@ -48,6 +49,10 @@ class ReservationController extends Controller
             'name' => $validatedData['name'],
             'surname' => $validatedData['surname'],
             'email' => $validatedData['email']
+        ]);
+        Auth::attempt([
+            'email' => $user->email,
+            'password' => $user->password
         ]);
         foreach($validatedData['seats'] as $seat)
         {

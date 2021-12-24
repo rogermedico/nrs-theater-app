@@ -25,6 +25,5 @@ Route::resource('reservation', ReservationController::class);
 Route::get('user/login',[UserController::class,'loginShow'])->name('user.login.show')->middleware('guest');
 Route::post('user/login',[UserController::class,'login'])->name('user.login')->middleware('guest');
 Route::get('user/logout',[UserController::class,'logout'])->name('user.logout')->middleware('auth');
-Route::put('user/{user}/profile',[UserController::class,'updateProfile'])->name('user.update.profile')->middleware('auth');
 Route::put('user/{user}/password',[UserController::class,'updatePassword'])->name('user.update.password')->middleware('auth');
-Route::resource('user',UserController::class)->except('show','update');
+Route::resource('user',UserController::class)->except('show');
