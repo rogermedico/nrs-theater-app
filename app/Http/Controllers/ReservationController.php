@@ -7,6 +7,7 @@ use App\Http\Requests\request\CreateSecondStepReservationRequest;
 use App\Models\Reservation;
 use App\Models\Session;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
@@ -63,8 +64,6 @@ class ReservationController extends Controller
      */
     public function store(CreateSecondStepReservationRequest $request)
     {
-        Log::channel('reservations')->info('User with id= logged in');
-
         $seats = $request->validated()['seats'];
         $createReservationFirstStepInfo = $request->session()->pull('createReservationFirstStepInfo');
 
@@ -87,15 +86,33 @@ class ReservationController extends Controller
                 $user = auth()->user();
             }
 
+            $session = Session::find($createReservationFirstStepInfo['session']);
+
             foreach($seats as $seat)
             {
                 $rowColumn = explode('-', $seat);
-                Reservation::create([
+                $reservation = Reservation::create([
                     'user_id' => $user->id,
                     'session_id' => $createReservationFirstStepInfo['session'],
                     'row' => $rowColumn[0],
                     'column' => $rowColumn[1]
                 ]);
+
+                Log::channel('reservations')
+                    ->info($user->name
+                        . ' '
+                        . $user->surname
+                        . ' (id='
+                        . $user->id
+                        . ') reserved seat in row '
+                        . $reservation->row
+                        . ' and column '
+                        . $reservation->column
+                        . ' for the "'
+                        . $session->name
+                        . '" theather play at '
+                        . Carbon::parse($session->date)->format('d/m/Y H:i')
+                    );
             }
 
             session(['message' => __('Reservation confirmed, check my reservations section to manage reservations')]);
