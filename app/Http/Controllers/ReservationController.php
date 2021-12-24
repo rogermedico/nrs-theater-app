@@ -30,10 +30,9 @@ class ReservationController extends Controller
      */
     public function create()
     {
-
         return view('reservation.create', [
             'sessions' => Session::all(),
-            'createReservationFirstStepInfo' => session('createReservationFirstStep')
+            'createReservationFirstStepInfo' => session('createReservationFirstStepInfo')
         ]);
     }
 
