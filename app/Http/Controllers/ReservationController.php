@@ -10,6 +10,7 @@ use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Log;
 
 class ReservationController extends Controller
@@ -104,13 +105,13 @@ class ReservationController extends Controller
                         . $user->surname
                         . ' (id='
                         . $user->id
-                        . ') reserved seat in row '
+                        . ') reserved a seat in row '
                         . $reservation->row
                         . ' and column '
                         . $reservation->column
                         . ' for the "'
                         . $session->name
-                        . '" theather play at '
+                        . '" theater play at '
                         . Carbon::parse($session->date)->format('d/m/Y H:i')
                     );
             }
@@ -125,12 +126,19 @@ class ReservationController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param  User $user
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View|\Illuminate\Http\RedirectResponse
      */
-    public function show($id)
+    public function show(Reservation $reservation)
     {
-        //
+//        if (Gate::denies('show', $user))
+//        {
+//            return redirect()->route('reservation.show', auth()->user());
+//        }
+//        $reservations = $user->reservations();//Reservation::where('user_id', $user->id)->get()->toArray();
+//        return view('reservation.my-reservations', [
+//            'reservations' => $reservations
+//        ]);
     }
 
     /**

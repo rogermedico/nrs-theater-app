@@ -27,4 +27,5 @@ Route::get('user/login',[UserController::class,'loginShow'])->name('user.login.s
 Route::post('user/login',[UserController::class,'login'])->name('user.login')->middleware('guest');
 Route::get('user/logout',[UserController::class,'logout'])->name('user.logout')->middleware('auth');
 Route::put('user/{user}/password',[UserController::class,'updatePassword'])->name('user.update.password')->middleware('auth');
+Route::get('user/{user}/reservations',[UserController::class, 'showReservations'])->name('user.reservations.show')->middleware('auth');
 Route::resource('user',UserController::class)->except('show');

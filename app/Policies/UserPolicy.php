@@ -39,6 +39,16 @@ class UserPolicy
         return $user->id === $updatedUser->id;
     }
 
+    public function showReservations(User $user, User $showReservationsForUser)
+    {
+        if($user->isAdmin())
+        {
+            return true;
+        }
+
+        return $user->id === $showReservationsForUser->id;
+    }
+
     public function delete(User $user, User $userToDelete)
     {
         if($user->isAdmin() && !$userToDelete->isAdmin())

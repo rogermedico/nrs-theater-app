@@ -10,7 +10,7 @@
                 </li>
                 @auth
                     <li class="nav-item">
-                        <a class="nav-link" href="#">My Reservations</a>
+                        <a class="nav-link" href="{{route('user.reservations.show', auth()->user())}}">My Reservations</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="{{route('user.edit',auth()->user())}}">{{__('Profile')}}</a>

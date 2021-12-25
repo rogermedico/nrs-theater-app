@@ -1,20 +1,31 @@
 .taken.seat-check.form-check-input {
-    &:disabled {
-        opacity: initial;
-    }
     &:checked {
         background-color: $danger;
         border-color: $danger;
     }
-
 }
 
-.seat-check.form-check-input {
+.empty.seat-check.form-check-input {
     &:checked {
         background-color: $success;
         border-color: $success;
     }
+}
+
+.taken.seat-check.form-check-input,
+.seat-check-legend.form-check-input {
+    &:disabled {
+        opacity: initial !important;
+    }
+}
+
+.seat-check,
+.seat-check-legend {
     &:checked[type="checkbox"] {
         background-image: none;
     }
+}
+
+.seat-check-legend-label {
+    opacity: initial !important;
 }

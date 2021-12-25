@@ -6,7 +6,9 @@ use App\Http\Requests\user\LoginUserRequest;
 use App\Http\Requests\user\StoreUserRequest;
 use App\Http\Requests\user\UpdateUserPasswordRequest;
 use App\Http\Requests\user\UpdateUserProfileRequest;
+use App\Models\Session;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
@@ -110,6 +112,32 @@ class UserController extends Controller
             'password' => $request->validated()['password']
         ]);
         return redirect()->back()->with('message', __('Password updated'));
+    }
+
+    /**
+     *  Show reservations
+     */
+    public function showReservations(User $user)
+    {
+        if (Gate::denies('showReservations', $user))
+        {
+            return redirect()->route('user.reservations.show', auth()->user());
+        }
+
+        $reservations = [];
+        foreach($user->reservations as $reservation)
+        {
+            $reservations[Session::find($reservation->session_id)->name
+                . ' ('
+                . Carbon::parse($reservation->date)->format('d/m/Y H:i')
+                . ')'
+            ][] = [
+                'row' => $reservation->row,
+                'column' => $reservation->column
+            ];
+        }
+
+        return view('users.my-reservations', compact('reservations'));
     }
 
     /**

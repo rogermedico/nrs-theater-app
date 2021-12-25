@@ -11312,18 +11312,26 @@ h1, .h1 {
   border-color: #003f88;
 }
 
-.taken.seat-check.form-check-input:disabled {
-  opacity: initial;
-}
 .taken.seat-check.form-check-input:checked {
   background-color: #dc3545;
   border-color: #dc3545;
 }
 
-.seat-check.form-check-input:checked {
+.empty.seat-check.form-check-input:checked {
   background-color: #198754;
   border-color: #198754;
 }
-.seat-check.form-check-input:checked[type=checkbox] {
+
+.taken.seat-check.form-check-input:disabled,
+.seat-check-legend.form-check-input:disabled {
+  opacity: initial !important;
+}
+
+.seat-check:checked[type=checkbox],
+.seat-check-legend:checked[type=checkbox] {
   background-image: none;
+}
+
+.seat-check-legend-label {
+  opacity: initial !important;
 }

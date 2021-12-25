@@ -16,26 +16,37 @@
                         @for ($row = 1; $row <= env('THEATER_MAX_ROWS'); $row++)
                             <div class="d-flex flex-row justify-content-center align-content-center">
                                 @for ($column = 1; $column <= env('THEATER_MAX_COLUMNS'); $column++)
-                                    <span class="form-check form-check-inline mx-2">
+                                    <span class="mx-2">
                                         <input
                                             id="seat{{$row . '-' . $column}}"
                                             @class([
                                                 'form-check-input',
                                                 'seat-check',
-                                                'taken' => in_array($row . '-' . $column, $occupiedSeats)
+                                                'taken' => in_array($row . '-' . $column, $occupiedSeats),
+                                                'empty' => !in_array($row . '-' . $column, $occupiedSeats)
                                             ])
                                             type="checkbox" name="seats[]"
                                             value="{{$row . '-' . $column}}"
                                             {{in_array($row . '-' . $column, $occupiedSeats) ? 'disabled checked' : ''}}
                                         >
-
-{{--                                        <label class="form-check-label" for="seat{{$row . '-' . $column}}">--}}
-{{--                                            {{$row . '-' . $column}}--}}
-{{--                                        </label>--}}
                                     </span>
                                 @endfor
                             </div>
                         @endfor
+                    </div>
+                    <div class="d-flex flex-row justify-content-center">
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input seat-check seat-check-legend" type="checkbox" id="seat-checkbox-empty-legend" disabled>
+                            <label class="form-check-label seat-check-legend-label" for="seat-checkbox-empty-legend">{{__('Empty')}}</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input seat-check seat-check-legend empty" type="checkbox" id="seat-checkbox-selected-legend" disabled checked>
+                            <label class="form-check-label seat-check-legend-label" for="seat-checkbox-selected-legend">{{__('Selected')}}</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input seat-check seat-check-legend taken" type="checkbox" id="seat-checkbox-taken-legend" disabled checked>
+                            <label class="form-check-label seat-check-legend-label" for="seat-checkbox-taken-legend">{{__('Occupied')}}</label>
+                        </div>
                     </div>
                     <div class="d-flex flex-row">
                         <div class="flex-grow-1">
