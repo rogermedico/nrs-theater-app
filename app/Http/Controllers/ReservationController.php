@@ -21,8 +21,7 @@ class ReservationController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth')->only(['index']);
-//        $this->middleware('guest')->only(['create', 'store']);
+        $this->middleware('auth')->only(['index','edit','update','destroy']);
     }
 
     /**
@@ -171,24 +170,6 @@ class ReservationController extends Controller
     }
 
     /**
-     * Display the specified resource.
-     *
-     * @param  User $user
-     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View|\Illuminate\Http\RedirectResponse
-     */
-    public function show(Reservation $reservation)
-    {
-//        if (Gate::denies('show', $user))
-//        {
-//            return redirect()->route('reservation.show', auth()->user());
-//        }
-//        $reservations = $user->reservations();//Reservation::where('user_id', $user->id)->get()->toArray();
-//        return view('reservation.my-reservations', [
-//            'reservations' => $reservations
-//        ]);
-    }
-
-    /**
      * Show the form for editing the specified resource.
      *
      * @param  int  $id
@@ -293,6 +274,7 @@ class ReservationController extends Controller
         }
 
         $reservation->delete();
+
         return back()->with('message', __('Reservation deleted'));
     }
 }

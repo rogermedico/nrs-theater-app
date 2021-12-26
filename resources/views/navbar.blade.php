@@ -9,9 +9,11 @@
                     <a class="nav-link" aria-current="page" href="{{route('reservation.create')}}">{{__('Make Reservation')}}</a>
                 </li>
                 @auth
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{route('user.reservations.show', auth()->user())}}">My Reservations</a>
-                    </li>
+                    @if(auth()->user()->hasReservations())
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{route('user.reservations.show', auth()->user())}}">My Reservations</a>
+                        </li>
+                    @endif
                     <li class="nav-item">
                         <a class="nav-link" href="{{route('user.edit',auth()->user())}}">{{__('Profile')}}</a>
                     </li>

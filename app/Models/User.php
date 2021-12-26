@@ -49,6 +49,11 @@ class User extends Authenticatable
         return $this->admin;
     }
 
+    public function hasReservations()
+    {
+        return (bool) $this->reservations->count();
+    }
+
     public function setPasswordAttribute($password)
     {
         $this->attributes['password'] = Hash::make($password);

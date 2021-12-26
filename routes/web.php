@@ -20,7 +20,7 @@ Route::get('/', function () {
 });
 /** reservation routes */
 Route::post('reservation/create/second',[ReservationController::class, 'createSecondStep'])->name('reservation.create.second');
-Route::resource('reservation', ReservationController::class);
+Route::resource('reservation', ReservationController::class)->except('show');
 
 /** user routes */
 Route::get('user/login',[UserController::class,'loginShow'])->name('user.login.show')->middleware('guest');

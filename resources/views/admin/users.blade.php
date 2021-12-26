@@ -14,7 +14,16 @@
                     </div>
                     <div class="flex-grow-1 d-flex flex-row justify-content-end">
                         <a class="btn btn-outline-success me-3" href="{{route('user.edit', $user)}}">{{__('Edit profile')}}</a>
-                        <a class="btn btn-outline-success me-3" href="{{route('user.reservations.show', $user)}}">{{__('Edit reservations')}}</a>
+                        <a @class([
+                            'btn',
+                            'btn-outline-success',
+                            'me-3',
+                            'disabled' => !$user->hasReservations()
+                            ])
+                           href="{{route('user.reservations.show', $user)}}"
+                        >
+                            {{__('Edit reservations')}}
+                        </a>
                         <span>
                             <form action="{{ route('user.destroy', $user) }}" method="post">
                                 @csrf
