@@ -2,7 +2,11 @@
 
 @section('main-content')
     <div class="offset-lg-2 col-lg-8 ">
-        <h1 class="serif">{{__('profile')}}</h1>
+        @if(auth()->user()->isAdmin() && auth()->user()->id !== $user->id)
+            <h1 class="serif">{{__('profile of ')}}{{$user->name}} {{$user->surname}}</h1>
+        @else
+            <h1 class="serif">{{__('my profile')}}</h1>
+        @endif
         <x-messages/>
         <x-errors/>
         <section class="my-3">

@@ -10,6 +10,11 @@ class ReservationPolicy
 {
     use HandlesAuthorization;
 
+    public function index(User $user)
+    {
+        return $user->isAdmin();
+    }
+
     public function show(User $user, User $reservationsUser)
     {
         if ($user->isAdmin())

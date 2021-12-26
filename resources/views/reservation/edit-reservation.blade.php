@@ -11,7 +11,7 @@
             <div class="card mb-3">
                 <div class="card-body d-flex flex-column">
                     <div class="text-center mb-3">
-                        <h2>stage</h2>
+                        <h2 class="border border-primary rounded offset-md-4 col-md-4 py-3">stage</h2>
                     </div>
                     <div class="mb-3">
                         @for ($row = 1; $row <= env('THEATER_MAX_ROWS'); $row++)

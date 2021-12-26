@@ -9,6 +9,11 @@ class UserPolicy
 {
     use HandlesAuthorization;
 
+    public function index(User $user)
+    {
+        return $user->isAdmin();
+    }
+
     public function edit(User $user, User $editedUser)
     {
         if($user->isAdmin())

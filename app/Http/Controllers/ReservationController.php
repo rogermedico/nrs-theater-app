@@ -16,13 +16,42 @@ use Illuminate\Support\Facades\Log;
 class ReservationController extends Controller
 {
     /**
+     * Constructor, apply middleware auth to specific routes
+     *
+     */
+    public function __construct()
+    {
+        $this->middleware('auth')->only(['index']);
+//        $this->middleware('guest')->only(['create', 'store']);
+    }
+
+    /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View|\Illuminate\Http\RedirectResponse
      */
     public function index()
     {
-        //
+        if (Gate::denies('index', auth()->user()))
+        {
+            return redirect()->route('user.reservations.show', auth()->user());
+        }
+
+        $reservations = [];
+        foreach (Reservation::orderBy('row')->orderBy('column')->get() as $reservation)
+        {
+            $session = Session::find($reservation['session_id']);
+            $user = User::find($reservation->user_id);
+            $reservations[$session->name][Carbon::parse($session->date)->format('d/m/Y H:i')][] = [
+                'id' => $reservation->id,
+                'user' => $user,
+                'row' => $reservation->row,
+                'column' => $reservation->column
+            ];
+        }
+
+
+        return view('admin.reservations', compact('reservations'));
     }
 
     /**
@@ -230,7 +259,8 @@ class ReservationController extends Controller
         ]);
 
         $reservations = [];
-        foreach(User::find($reservation->user_id)->reservations as $reservation)
+        $user = User::find($reservation->user_id);
+        foreach($user->reservations as $reservation)
         {
             $session = Session::find($reservation->session_id);
             $reservations[$session->name][Carbon::parse($session->date)->format('d/m/Y H:i')][] = [
@@ -240,7 +270,13 @@ class ReservationController extends Controller
             ];
         }
 
-        return view('users.my-reservations', compact('reservations'))->with('message', __('Reservation updated'));
+        if (auth()->user()->id !== $reservation->user_id)
+        {
+            return redirect()->route('reservation.index')->with('message', __('Reservation updated'));
+        } else {
+            return view('users.reservations', compact('reservations','user'))->with('message', __('Reservation updated'));
+        }
+
     }
 
     /**

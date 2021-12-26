@@ -28,10 +28,15 @@ class UserController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View|\Illuminate\Http\Response
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View|\Illuminate\Http\RedirectResponse
      */
     public function index()
     {
+        if (Gate::denies('index', auth()->user()))
+        {
+            return redirect()->route('user.edit', auth()->user());
+        }
+
         return view('admin.users', [
             'users' => User::all()
         ]);
@@ -135,7 +140,7 @@ class UserController extends Controller
             ];
         }
 
-        return view('users.my-reservations', compact('reservations'));
+        return view('users.reservations', compact('reservations','user'));
     }
 
     /**

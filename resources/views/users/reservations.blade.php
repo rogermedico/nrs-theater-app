@@ -2,7 +2,11 @@
 
 @section('main-content')
     <div class="offset-lg-2 col-lg-8 ">
-        <h1>{{__('my reservations')}}</h1>
+        @if(auth()->user()->isAdmin() && auth()->user()->id !== $user->id)
+            <h1 class="serif">{{__('reservations of ')}}{{$user->name}} {{$user->surname}}</h1>
+        @else
+            <h1>{{__('my reservations')}}</h1>
+        @endif
         <x-messages/>
         <x-errors/>
         @foreach($reservations as $reservationName => $sessions)
@@ -10,10 +14,15 @@
                 <h2>{{$reservationName}}</h2>
                 @foreach($sessions as $sessionDatetime => $seats)
                     <p class="mt-3">
-                        {{__('You have ')}}
+                        @if(auth()->user()->isAdmin() && auth()->user()->id !== $user->id)
+                            {{$user->name}} {{$user->surname}}{{__(' has ')}}
+                        @else
+                            {{__('You have ')}}
+                        @endif
                         {{count($seats)}}
                         {{__('tickets for the play at ')}}
-                        {{$sessionDatetime}}</p>
+                        {{$sessionDatetime}}
+                    </p>
                     <ul class="list-group">
                         @foreach($seats as $seat)
                             <li class="list-group-item d-flex flex-row">
