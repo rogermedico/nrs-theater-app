@@ -5,6 +5,13 @@
     }
 }
 
+.user.seat-check.form-check-input {
+    &:checked {
+        background-color: $warning;
+        border-color: $warning;
+    }
+}
+
 .empty.seat-check.form-check-input {
     &:checked {
         background-color: $success;
@@ -13,6 +20,7 @@
 }
 
 .taken.seat-check.form-check-input,
+.user.seat-check.form-check-input,
 .seat-check-legend.form-check-input {
     &:disabled {
         opacity: initial !important;

@@ -71,7 +71,7 @@ class UserController extends Controller
     {
         if (Gate::denies('edit', $user))
         {
-            return redirect()->route('user.edit',auth()->user());
+            return redirect()->route('user.edit', auth()->user());
         }
         return view('users.profile', [
             'user' => $user

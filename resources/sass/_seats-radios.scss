@@ -1,0 +1,41 @@
+.form-check-input[type="radio"] {
+    border-radius: .25rem;
+}
+.taken.seat-radio.form-check-input {
+    background-color: $danger;
+    border-color: $danger;
+}
+
+.user.seat-radio.form-check-input {
+    background-color: $warning;
+    border-color: $warning;
+}
+
+.empty.seat-radio.form-check-input {
+    &:checked {
+        background-color: $success;
+        border-color: $success;
+    }
+    &:checked[type="radio"] {
+        background-image: none;
+    }
+}
+
+.taken.seat-radio.form-check-input,
+.user.seat-radio.form-check-input,
+.seat-radio-legend.form-check-input {
+    &:disabled {
+        opacity: initial !important;
+    }
+}
+
+.seat-radio,
+.seat-radio-legend {
+    &:checked[type="radio"] {
+        background-image: none;
+    }
+}
+
+.seat-radio-legend-label {
+    opacity: initial !important;
+}

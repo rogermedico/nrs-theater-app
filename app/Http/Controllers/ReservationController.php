@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\request\CreateFirstStepReservationRequest;
-use App\Http\Requests\request\CreateSecondStepReservationRequest;
+use App\Http\Requests\reservation\CreateFirstStepReservationRequest;
+use App\Http\Requests\reservation\CreateSecondStepReservationRequest;
+use App\Http\Requests\reservation\UpdateReservationRequest;
 use App\Models\Reservation;
 use App\Models\Session;
 use App\Models\User;
 use Carbon\Carbon;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Log;
@@ -50,10 +50,28 @@ class ReservationController extends Controller
         $occupiedSeats = array_map(function ($seat) {
             return $seat['row'] . '-' . $seat['column'];
         },
-            Session::find($request->validated()['session'])->reservations()->select(['row','column'])->get()->toArray()
+            Session::find($request->validated()['session'])->reservations()->select(['row', 'column'])->get()->toArray()
         );
+
+        if(auth()->user()) {
+            $userSeats = array_map(function ($seat) {
+                return $seat['row'] . '-' . $seat['column'];
+            },
+                Reservation::where('session_id', $request->validated()['session'])
+                ->where('user_id', auth()->user()->id)
+                ->select(['row', 'column'])
+                ->get()
+                ->toArray()
+            );
+
+            $occupiedSeats = array_diff($occupiedSeats, $userSeats);
+        }
+
+
+
         return view('reservation.create-second-step', [
-            'occupiedSeats' => $occupiedSeats
+            'occupiedSeats' => $occupiedSeats,
+            'userSeats' => $userSeats ?? []
         ]);
     }
 
@@ -145,11 +163,51 @@ class ReservationController extends Controller
      * Show the form for editing the specified resource.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View|\Illuminate\Http\RedirectResponse
      */
-    public function edit($id)
+    public function edit(Reservation $reservation)
     {
-        //
+        if (Gate::denies('edit', $reservation))
+        {
+            return redirect()->route('user.reservations.show', auth()->user());
+        }
+
+        $occupiedSeats = array_map(function ($seat) {
+            return $seat['row'] . '-' . $seat['column'];
+        },
+            Reservation::where('session_id',$reservation->session_id)
+                ->where(function ($q) use ($reservation) {
+                    $q->where('row', '!=', $reservation->row);
+                    $q->orWhere('column', '!=', $reservation->column);
+
+                })
+                ->select(['row','column'])
+                ->get()
+                ->toArray()
+        );
+
+        $userSeats = array_map(function ($seat) {
+            return $seat['row'] . '-' . $seat['column'];
+        },
+            Reservation::where('session_id', $reservation->session_id)
+                ->where('user_id', $reservation->user_id)
+                ->where(function ($q) use ($reservation) {
+                    $q->where('row', '!=', $reservation->row);
+                    $q->orWhere('column', '!=', $reservation->column);
+
+                })
+                ->select(['row', 'column'])
+                ->get()
+                ->toArray()
+        );
+
+        $occupiedSeats = array_diff($occupiedSeats, $userSeats);
+
+        return view('reservation.edit-reservation', [
+            'reservation' => $reservation,
+            'occupiedSeats' => $occupiedSeats,
+            'userSeats' => $userSeats
+        ]);
     }
 
     /**
@@ -157,11 +215,32 @@ class ReservationController extends Controller
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View|\Illuminate\Http\RedirectResponse
      */
-    public function update(Request $request, $id)
+    public function update(UpdateReservationRequest $request, Reservation $reservation)
     {
-        //
+        if (Gate::denies('update', $reservation))
+        {
+            return redirect()->route('user.reservations.show', auth()->user());
+        }
+        $rowColumn = explode('-', $request->validated()['newseat']);
+        $reservation->update([
+            'row' => $rowColumn[0],
+            'column' => $rowColumn[1]
+        ]);
+
+        $reservations = [];
+        foreach(User::find($reservation->user_id)->reservations as $reservation)
+        {
+            $session = Session::find($reservation->session_id);
+            $reservations[$session->name][Carbon::parse($session->date)->format('d/m/Y H:i')][] = [
+                'id' => $reservation->id,
+                'row' => $reservation->row,
+                'column' => $reservation->column
+            ];
+        }
+
+        return view('users.my-reservations', compact('reservations'))->with('message', __('Reservation updated'));
     }
 
     /**
@@ -174,7 +253,7 @@ class ReservationController extends Controller
     {
         if (Gate::denies('delete', $reservation))
         {
-            return redirect()->route('user.reservations.show');
+            return redirect()->route('user.reservations.show', auth()->user());
         }
 
         $reservation->delete();

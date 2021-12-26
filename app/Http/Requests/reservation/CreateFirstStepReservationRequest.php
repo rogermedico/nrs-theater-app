@@ -1,8 +1,9 @@
 <?php
 
-namespace App\Http\Requests\request;
+namespace App\Http\Requests\reservation;
 
 use Illuminate\Foundation\Http\FormRequest;
+use function auth;
 
 class CreateFirstStepReservationRequest extends FormRequest
 {

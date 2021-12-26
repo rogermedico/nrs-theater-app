@@ -20,36 +20,26 @@ class ReservationPolicy
         return $user->id === $reservationsUser->id;
     }
 
-//    public function edit(User $user, User $editedUser)
-//    {
-//        if($user->isAdmin())
-//        {
-//            return true;
-//        }
-//
-//        return $user->id === $editedUser->id;
-//    }
+    public function edit(User $user, Reservation $reservation)
+    {
+        if($user->isAdmin())
+        {
+            return true;
+        }
 
-//    public function updateProfile(User $user, User $updatedUser)
-//    {
-//        if($user->isAdmin())
-//        {
-//            return true;
-//        }
-//
-//        return $user->id === $updatedUser->id;
-//    }
-//
-//    public function updatePassword(User $user, User $updatedUser)
-//    {
-//        if($user->isAdmin())
-//        {
-//            return true;
-//        }
-//
-//        return $user->id === $updatedUser->id;
-//    }
-//
+        return $user->id === $reservation->user_id;
+    }
+
+    public function update(User $user, Reservation $reservation)
+    {
+        if($user->isAdmin())
+        {
+            return true;
+        }
+
+        return $user->id === $reservation->user_id;
+    }
+
     public function delete(User $user, Reservation $reservation)
     {
         if($user->isAdmin())

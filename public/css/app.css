@@ -11317,12 +11317,18 @@ h1, .h1 {
   border-color: #dc3545;
 }
 
+.user.seat-check.form-check-input:checked {
+  background-color: #ffc107;
+  border-color: #ffc107;
+}
+
 .empty.seat-check.form-check-input:checked {
   background-color: #198754;
   border-color: #198754;
 }
 
 .taken.seat-check.form-check-input:disabled,
+.user.seat-check.form-check-input:disabled,
 .seat-check-legend.form-check-input:disabled {
   opacity: initial !important;
 }
@@ -11333,5 +11339,42 @@ h1, .h1 {
 }
 
 .seat-check-legend-label {
+  opacity: initial !important;
+}
+
+.form-check-input[type=radio] {
+  border-radius: 0.25rem;
+}
+
+.taken.seat-radio.form-check-input {
+  background-color: #dc3545;
+  border-color: #dc3545;
+}
+
+.user.seat-radio.form-check-input {
+  background-color: #ffc107;
+  border-color: #ffc107;
+}
+
+.empty.seat-radio.form-check-input:checked {
+  background-color: #198754;
+  border-color: #198754;
+}
+.empty.seat-radio.form-check-input:checked[type=radio] {
+  background-image: none;
+}
+
+.taken.seat-radio.form-check-input:disabled,
+.user.seat-radio.form-check-input:disabled,
+.seat-radio-legend.form-check-input:disabled {
+  opacity: initial !important;
+}
+
+.seat-radio:checked[type=radio],
+.seat-radio-legend:checked[type=radio] {
+  background-image: none;
+}
+
+.seat-radio-legend-label {
   opacity: initial !important;
 }
