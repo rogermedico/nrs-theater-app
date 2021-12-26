@@ -11,7 +11,7 @@
                 @auth
                     @if(auth()->user()->hasReservations())
                         <li class="nav-item">
-                            <a class="nav-link" href="{{route('user.reservations.show', auth()->user())}}">My Reservations</a>
+                            <a class="nav-link" href="{{route('user.reservations.show', auth()->user())}}">{{__('Reservations')}}</a>
                         </li>
                     @endif
                     <li class="nav-item">
@@ -20,11 +20,12 @@
                     @if(auth()->user()->isAdmin())
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                Admin
+                                {{__('Admin')}}
                             </a>
                             <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                <li><a class="dropdown-item" href="{{route('user.index')}}">Manage users</a></li>
-                                <li><a class="dropdown-item" href="{{route('reservation.index')}}">Manage Reservations</a></li>
+                                <li><a class="dropdown-item" href="{{route('user.index')}}">{{__('Manage users')}}</a></li>
+                                <li><a class="dropdown-item" href="{{route('reservation.index')}}">{{__('Manage reservations')}}</a></li>
+                                <li><a class="dropdown-item" href="{{route('reservation.index')}}">{{__('Manage sessions')}}</a></li>
                             </ul>
                         </li>
                     @endif
@@ -40,11 +41,11 @@
                 <span class="navbar-brand d-md-none">
                     {{auth()->user()->name}} {{auth()->user()->surname}}
                 </span>
-                <a class="btn btn-outline-danger" href="{{route('user.logout')}}">Logout</a>
+                <a class="btn btn-outline-danger" href="{{route('user.logout')}}">{{__('Logout')}}</a>
             @endauth
             @guest
-                <a class="btn btn-outline-success me-3" href="{{route('user.create')}}">Register</a>
-                <a class="btn btn-success" href="{{route('user.login.show')}}">Login</a>
+                <a class="btn btn-outline-success me-3" href="{{route('user.create')}}">{{__('Register')}}</a>
+                <a class="btn btn-success" href="{{route('user.login.show')}}">{{__('Login')}}</a>
             @endguest
 
         </div>
