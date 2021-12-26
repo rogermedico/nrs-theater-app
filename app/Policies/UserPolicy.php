@@ -14,7 +14,7 @@ class UserPolicy
         return $user->isAdmin();
     }
 
-    public function edit(User $user, User $editedUser)
+    public function edit(User $user, User $editedUser): bool
     {
         if($user->isAdmin())
         {
@@ -24,7 +24,7 @@ class UserPolicy
         return $user->id === $editedUser->id;
     }
 
-    public function updateProfile(User $user, User $updatedUser)
+    public function updateProfile(User $user, User $updatedUser): bool
     {
         if($user->isAdmin())
         {
@@ -34,7 +34,7 @@ class UserPolicy
         return $user->id === $updatedUser->id;
     }
 
-    public function updatePassword(User $user, User $updatedUser)
+    public function updatePassword(User $user, User $updatedUser): bool
     {
         if($user->isAdmin())
         {
@@ -44,7 +44,7 @@ class UserPolicy
         return $user->id === $updatedUser->id;
     }
 
-    public function showReservations(User $user, User $showReservationsForUser)
+    public function showReservations(User $user, User $showReservationsForUser): bool
     {
         if($user->isAdmin())
         {
@@ -54,7 +54,7 @@ class UserPolicy
         return $user->id === $showReservationsForUser->id;
     }
 
-    public function delete(User $user, User $userToDelete)
+    public function delete(User $user, User $userToDelete): bool
     {
         if($user->isAdmin() && !$userToDelete->isAdmin())
         {

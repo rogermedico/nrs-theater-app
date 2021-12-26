@@ -2,13 +2,17 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\reservation\CreateFirstStepReservationRequest;
-use App\Http\Requests\reservation\CreateSecondStepReservationRequest;
+use App\Http\Requests\reservation\ProcessFirstStepReservationRequest;
+use App\Http\Requests\reservation\ProcessSecondStepReservationRequest;
 use App\Http\Requests\reservation\UpdateReservationRequest;
 use App\Models\Reservation;
 use App\Models\Session;
 use App\Models\User;
 use Carbon\Carbon;
+use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Contracts\View\Factory;
+use Illuminate\Contracts\View\View;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Log;
@@ -27,7 +31,7 @@ class ReservationController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View|\Illuminate\Http\RedirectResponse
+     * @return Application|Factory|View|RedirectResponse
      */
     public function index()
     {
@@ -49,14 +53,13 @@ class ReservationController extends Controller
             ];
         }
 
-
         return view('admin.reservations', compact('reservations'));
     }
 
     /**
      * Show the form for the first step of creating a new resource.
      *
-     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View|\Illuminate\Http\Response
+     * @return Application|Factory|View
      */
     public function create()
     {
@@ -69,9 +72,10 @@ class ReservationController extends Controller
     /**
      * Process the first step of the form for creating a new resource.
      *
-     * @return \Illuminate\Http\RedirectResponse
+     * @param ProcessFirstStepReservationRequest $request
+     * @return RedirectResponse
      */
-    public function processFirstStep/*createSecondStep*/(CreateFirstStepReservationRequest $request)
+    public function processFirstStep(ProcessFirstStepReservationRequest $request): RedirectResponse
     {
         session(['createReservationFirstStepInfo' => $request->validated()]);
 
@@ -81,7 +85,7 @@ class ReservationController extends Controller
     /**
      * Show the second step of the form for creating a new resource.
      *
-     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View|\Illuminate\Http\Response
+     * @return Application|Factory|View
      */
     public function createSecondStep()
     {
@@ -116,10 +120,10 @@ class ReservationController extends Controller
     /**
      * Store a newly created resource in storage (Store second step).
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View|\Illuminate\Http\Response
+     * @param  ProcessSecondStepReservationRequest  $request
+     * @return Application|Factory|View
      */
-    public function store(CreateSecondStepReservationRequest $request)
+    public function store(ProcessSecondStepReservationRequest $request)
     {
         $seats = $request->validated()['seats'];
         $createReservationFirstStepInfo = $request->session()->pull('createReservationFirstStepInfo');
@@ -183,8 +187,8 @@ class ReservationController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  int  $id
-     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View|\Illuminate\Http\RedirectResponse
+     * @param  Reservation $reservation
+     * @return Application|Factory|View|RedirectResponse
      */
     public function edit(Reservation $reservation)
     {
@@ -234,9 +238,9 @@ class ReservationController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View|\Illuminate\Http\RedirectResponse
+     * @param  UpdateReservationRequest  $request
+     * @param  Reservation  $reservation
+     * @return Application|Factory|View|RedirectResponse
      */
     public function update(UpdateReservationRequest $request, Reservation $reservation)
     {
@@ -290,7 +294,8 @@ class ReservationController extends Controller
         {
             return redirect()->route('reservation.index')->with('message', __('Reservation updated'));
         } else {
-            return view('users.reservations', compact('reservations','user'))->with('message', __('Reservation updated'));
+            return view('users.reservations', compact('reservations','user'))
+                ->with('message', __('Reservation updated'));
         }
 
     }
@@ -299,9 +304,9 @@ class ReservationController extends Controller
      * Remove the specified resource from storage.
      *
      * @param  Reservation $reservation
-     * @return \Illuminate\Http\RedirectResponse
+     * @return RedirectResponse
      */
-    public function destroy(Reservation $reservation)
+    public function destroy(Reservation $reservation): RedirectResponse
     {
         if (Gate::denies('delete', $reservation))
         {

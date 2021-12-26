@@ -5,14 +5,14 @@ namespace App\Http\Requests\reservation;
 use Illuminate\Foundation\Http\FormRequest;
 use function auth;
 
-class CreateFirstStepReservationRequest extends FormRequest
+class ProcessFirstStepReservationRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
      *
      * @return bool
      */
-    public function authorize()
+    public function authorize(): bool
     {
         return true;
     }
@@ -22,7 +22,7 @@ class CreateFirstStepReservationRequest extends FormRequest
      *
      * @return array
      */
-    public function rules()
+    public function rules(): array
     {
         $rules = [
             'session' => 'required|exists:sessions,id'

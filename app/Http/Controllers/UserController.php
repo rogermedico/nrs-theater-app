@@ -9,6 +9,10 @@ use App\Http\Requests\user\UpdateUserProfileRequest;
 use App\Models\Session;
 use App\Models\User;
 use Carbon\Carbon;
+use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Contracts\View\Factory;
+use Illuminate\Contracts\View\View;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
@@ -28,7 +32,7 @@ class UserController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View|\Illuminate\Http\RedirectResponse
+     * @return Application|Factory|View|RedirectResponse
      */
     public function index()
     {
@@ -45,7 +49,7 @@ class UserController extends Controller
     /**
      * Show the form for creating a new resource.
      *
-     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View|\Illuminate\Http\RedirectResponse
+     * @return Application|Factory|View
      */
     public function create()
     {
@@ -55,22 +59,23 @@ class UserController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\RedirectResponse
+     * @param  StoreUserRequest  $request
+     * @return RedirectResponse
      */
-    public function store(StoreUserRequest $request)
+    public function store(StoreUserRequest $request): RedirectResponse
     {
         $user = User::create($request->validated());
         Auth::login($user);
         $request->session()->regenerate();
+
         return redirect()->route('reservation.create');
     }
 
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  int  $id
-     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View|\Illuminate\Http\RedirectResponse
+     * @param  User $user
+     * @return Application|Factory|View|RedirectResponse
      */
     public function edit(User $user)
     {
@@ -86,11 +91,11 @@ class UserController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  UpdateUserProfileRequest  $request
      * @param  User $user
-     * @return \Illuminate\Http\RedirectResponse
+     * @return RedirectResponse
      */
-    public function update(UpdateUserProfileRequest $request, User $user)
+    public function update(UpdateUserProfileRequest $request, User $user): RedirectResponse
     {
         if (Gate::denies('updateProfile', $user))
         {
@@ -103,24 +108,29 @@ class UserController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\RedirectResponse
+     * @param UpdateUserPasswordRequest  $request
+     * @param User $user
+     * @return RedirectResponse
      */
-    public function updatePassword(UpdateUserPasswordRequest $request, User $user)
+    public function updatePassword(UpdateUserPasswordRequest $request, User $user): RedirectResponse
     {
         if (Gate::denies('updatePassword', $user))
         {
             return redirect()->route('reservation.create');
         }
+
         $user->update([
             'password' => $request->validated()['password']
         ]);
+
         return redirect()->back()->with('message', __('Password updated'));
     }
 
     /**
-     *  Show reservations
+     * Show reservations
+     *
+     * @param User $user
+     * @return Application|Factory|View|RedirectResponse
      */
     public function showReservations(User $user)
     {
@@ -146,10 +156,11 @@ class UserController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
-     * @return \Illuminate\Http\RedirectResponse
+     * @param Request $request
+     * @param User $user
+     * @return RedirectResponse
      */
-    public function destroy(Request $request, User $user)
+    public function destroy(Request $request, User $user): RedirectResponse
     {
         if (Gate::denies('delete', $user))
         {
@@ -168,14 +179,12 @@ class UserController extends Controller
 
         $user->delete();
         return back()->with('message', __('User deleted'));
-
-
     }
 
     /**
      * Show the form to login users.
      *
-     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View|\Illuminate\Http\RedirectResponse
+     * @return Application|Factory|View
      */
     public function loginShow()
     {
@@ -186,9 +195,9 @@ class UserController extends Controller
      * Logs in the user if the credentials are correct
      *
      * @param LoginUserRequest $request
-     * @return \Illuminate\Http\RedirectResponse
+     * @return RedirectResponse
      */
-    public function login(LoginUserRequest $request)
+    public function login(LoginUserRequest $request): RedirectResponse
     {
         if (Auth::attempt($request->validated())) {
             $request->session()->regenerate();
@@ -205,9 +214,9 @@ class UserController extends Controller
      * Logs out the logged in user.
      *
      * @param Request $request
-     * @return \Illuminate\Http\RedirectResponse
+     * @return RedirectResponse
      */
-    public function logout(Request $request)
+    public function logout(Request $request): RedirectResponse
     {
         Auth::logout();
         $request->session()->invalidate();

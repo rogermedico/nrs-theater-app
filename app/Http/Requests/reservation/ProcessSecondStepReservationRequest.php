@@ -4,14 +4,14 @@ namespace App\Http\Requests\reservation;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class CreateSecondStepReservationRequest extends FormRequest
+class ProcessSecondStepReservationRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
      *
      * @return bool
      */
-    public function authorize()
+    public function authorize(): bool
     {
         return true;
     }
@@ -21,7 +21,7 @@ class CreateSecondStepReservationRequest extends FormRequest
      *
      * @return array
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             'seats' => 'required|array|min:1',

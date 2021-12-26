@@ -15,7 +15,7 @@ class ReservationPolicy
         return $user->isAdmin();
     }
 
-    public function show(User $user, User $reservationsUser)
+    public function show(User $user, User $reservationsUser): bool
     {
         if ($user->isAdmin())
         {
@@ -25,7 +25,7 @@ class ReservationPolicy
         return $user->id === $reservationsUser->id;
     }
 
-    public function edit(User $user, Reservation $reservation)
+    public function edit(User $user, Reservation $reservation): bool
     {
         if($user->isAdmin())
         {
@@ -35,7 +35,7 @@ class ReservationPolicy
         return $user->id === $reservation->user_id;
     }
 
-    public function update(User $user, Reservation $reservation)
+    public function update(User $user, Reservation $reservation): bool
     {
         if($user->isAdmin())
         {
@@ -45,7 +45,7 @@ class ReservationPolicy
         return $user->id === $reservation->user_id;
     }
 
-    public function delete(User $user, Reservation $reservation)
+    public function delete(User $user, Reservation $reservation): bool
     {
         if($user->isAdmin())
         {
