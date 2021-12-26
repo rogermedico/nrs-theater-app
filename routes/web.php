@@ -19,7 +19,8 @@ Route::get('/', function () {
     return view('main');
 });
 /** reservation routes */
-Route::post('reservation/create/second',[ReservationController::class, 'createSecondStep'])->name('reservation.create.second');
+Route::get('reservation/create/second',[ReservationController::class, 'createSecondStep'])->name('reservation.create.second');
+Route::post('reservation/first',[ReservationController::class, 'processFirstStep'])->name('reservation.store.first');
 Route::resource('reservation', ReservationController::class)->except('show');
 
 /** user routes */

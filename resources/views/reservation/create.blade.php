@@ -5,7 +5,7 @@
         <h1 class="serif">{{__('reservation')}}</h1>
         <x-messages/>
         <x-errors/>
-        <form class="needs-validation" novalidate method="post" action="{{route('reservation.create.second')}}">
+        <form class="needs-validation" novalidate method="post" action="{{route('reservation.store.first')}}">
             @csrf
             <div class="card mb-3">
                 <div class="card-body">

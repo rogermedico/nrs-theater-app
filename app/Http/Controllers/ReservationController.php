@@ -54,7 +54,7 @@ class ReservationController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Show the form for the first step of creating a new resource.
      *
      * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View|\Illuminate\Http\Response
      */
@@ -67,25 +67,37 @@ class ReservationController extends Controller
     }
 
     /**
-     * Show the second part of the form for creating a new resource.
+     * Process the first step of the form for creating a new resource.
+     *
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function processFirstStep/*createSecondStep*/(CreateFirstStepReservationRequest $request)
+    {
+        session(['createReservationFirstStepInfo' => $request->validated()]);
+
+        return redirect()->route('reservation.create.second');
+    }
+
+    /**
+     * Show the second step of the form for creating a new resource.
      *
      * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View|\Illuminate\Http\Response
      */
-    public function createSecondStep(CreateFirstStepReservationRequest $request)
+    public function createSecondStep()
     {
-        session(['createReservationFirstStepInfo' => $request->validated()]);
+        $createReservationFirstStepInfo = session('createReservationFirstStepInfo');
 
         $occupiedSeats = array_map(function ($seat) {
             return $seat['row'] . '-' . $seat['column'];
         },
-            Session::find($request->validated()['session'])->reservations()->select(['row', 'column'])->get()->toArray()
+            Session::find($createReservationFirstStepInfo['session'])->reservations()->select(['row', 'column'])->get()->toArray()
         );
 
         if(auth()->user()) {
             $userSeats = array_map(function ($seat) {
                 return $seat['row'] . '-' . $seat['column'];
             },
-                Reservation::where('session_id', $request->validated()['session'])
+                Reservation::where('session_id', $createReservationFirstStepInfo['session'])
                 ->where('user_id', auth()->user()->id)
                 ->select(['row', 'column'])
                 ->get()
@@ -95,8 +107,6 @@ class ReservationController extends Controller
             $occupiedSeats = array_diff($occupiedSeats, $userSeats);
         }
 
-
-
         return view('reservation.create-second-step', [
             'occupiedSeats' => $occupiedSeats,
             'userSeats' => $userSeats ?? []
@@ -104,7 +114,7 @@ class ReservationController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Store a newly created resource in storage (Store second step).
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View|\Illuminate\Http\Response
@@ -151,19 +161,20 @@ class ReservationController extends Controller
                         . $user->surname
                         . ' (id='
                         . $user->id
-                        . ') reserved a seat in row '
+                        . ') reserved the seat at '
                         . $reservation->row
-                        . ' and column '
+                        . '-'
                         . $reservation->column
                         . ' for the "'
                         . $session->name
-                        . '" theater play at '
+                        . '" theater play on '
                         . Carbon::parse($session->date)->format('d/m/Y H:i')
                     );
             }
 
             session(['message' => __('Reservation confirmed, check my reservations section to manage reservations')]);
         }
+
         return view('reservation.create', [
             'sessions' => Session::all()
         ]);
@@ -233,7 +244,31 @@ class ReservationController extends Controller
         {
             return redirect()->route('user.reservations.show', auth()->user());
         }
+
         $rowColumn = explode('-', $request->validated()['newseat']);
+
+        $session = Session::find($reservation->session_id);
+
+        Log::channel('reservations')
+            ->info(auth()->user()->name
+                . ' '
+                . auth()->user()->surname
+                . ' (id='
+                . auth()->user()->id
+                . ') changed the seat at '
+                . $reservation->row
+                . '-'
+                . $reservation->column
+                . ' for the seat at '
+                . $rowColumn[0]
+                . '-'
+                . $rowColumn[1]
+                . ' for the "'
+                . $session->name
+                . '" theater play on '
+                . Carbon::parse($session->date)->format('d/m/Y H:i')
+            );
+
         $reservation->update([
             'row' => $rowColumn[0],
             'column' => $rowColumn[1]
@@ -272,6 +307,24 @@ class ReservationController extends Controller
         {
             return redirect()->route('user.reservations.show', auth()->user());
         }
+
+        $session = Session::find($reservation->session_id);
+
+        Log::channel('reservations')
+            ->info(auth()->user()->name
+                . ' '
+                . auth()->user()->surname
+                . ' (id='
+                . auth()->user()->id
+                . ') canceled the seat at '
+                . $reservation->row
+                . '-'
+                . $reservation->column
+                . ' for the "'
+                . $session->name
+                . '" theater play on '
+                . Carbon::parse($session->date)->format('d/m/Y H:i')
+            );
 
         $reservation->delete();
 
