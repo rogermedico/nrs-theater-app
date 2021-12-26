@@ -13,7 +13,7 @@
                         <p class="mt-3">
                             {{__('There are ')}}
                             {{count($seats)}}
-                            {{__('tickets for the play at ')}}
+                            {{__('tickets for the play on ')}}
                             {{$sessionDatetime}}</p>
                         <ul class="list-group">
                             @foreach($seats as $seat)
