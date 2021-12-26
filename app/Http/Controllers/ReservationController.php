@@ -167,11 +167,17 @@ class ReservationController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param  Reservation $reservation
+     * @return \Illuminate\Http\RedirectResponse
      */
-    public function destroy($id)
+    public function destroy(Reservation $reservation)
     {
-        //
+        if (Gate::denies('delete', $reservation))
+        {
+            return redirect()->route('user.reservations.show');
+        }
+
+        $reservation->delete();
+        return back()->with('message', __('Reservation deleted'));
     }
 }

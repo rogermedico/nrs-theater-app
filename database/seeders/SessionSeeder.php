@@ -14,6 +14,9 @@ class SessionSeeder extends Seeder
      */
     public function run()
     {
+        Session::factory(2)->create([
+            'name' => 'Hamlet'
+        ]);
         Session::factory(4)->create();
     }
 }

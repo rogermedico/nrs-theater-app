@@ -127,11 +127,9 @@ class UserController extends Controller
         $reservations = [];
         foreach($user->reservations as $reservation)
         {
-            $reservations[Session::find($reservation->session_id)->name
-                . ' ('
-                . Carbon::parse($reservation->date)->format('d/m/Y H:i')
-                . ')'
-            ][] = [
+            $session = Session::find($reservation->session_id);
+            $reservations[$session->name][Carbon::parse($session->date)->format('d/m/Y H:i')][] = [
+                'id' => $reservation->id,
                 'row' => $reservation->row,
                 'column' => $reservation->column
             ];

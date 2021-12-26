@@ -2,6 +2,7 @@
 
 namespace App\Policies;
 
+use App\Models\Reservation;
 use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
@@ -49,13 +50,13 @@ class ReservationPolicy
 //        return $user->id === $updatedUser->id;
 //    }
 //
-//    public function delete(User $user, User $userToDelete)
-//    {
-//        if($user->isAdmin() && !$userToDelete->isAdmin())
-//        {
-//            return true;
-//        }
-//
-//        return $user->id === $userToDelete->id;
-//    }
+    public function delete(User $user, Reservation $reservation)
+    {
+        if($user->isAdmin())
+        {
+            return true;
+        }
+
+        return $user->id === $reservation->user_id;
+    }
 }
