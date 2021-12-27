@@ -14,9 +14,9 @@
                         <h2 class="border border-primary rounded offset-md-4 col-md-4 py-3">stage</h2>
                     </div>
                     <div class="mb-3">
-                        @for ($row = 1; $row <= env('THEATER_MAX_ROWS'); $row++)
+                        @for ($row = 1; $row <= env('THEATER_MAX_ROWS', 5); $row++)
                             <div class="d-flex flex-row justify-content-center align-content-center">
-                                @for ($column = 1; $column <= env('THEATER_MAX_COLUMNS'); $column++)
+                                @for ($column = 1; $column <= env('THEATER_MAX_COLUMNS', 10); $column++)
                                     <span class="mx-2">
                                         <input
                                             id="seat{{$row . '-' . $column}}"
