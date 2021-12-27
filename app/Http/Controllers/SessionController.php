@@ -20,8 +20,7 @@ class SessionController extends Controller
      */
     public function index()
     {
-        if (Gate::denies('index', auth()->user()))
-        {
+        if (Gate::denies('index', auth()->user())) {
             return redirect()->route('reservation.create');
         }
 
@@ -38,8 +37,7 @@ class SessionController extends Controller
      */
     public function store(StoreSessionRequest $request): RedirectResponse
     {
-        if (Gate::denies('store', Session::class))
-        {
+        if (Gate::denies('store', Session::class)) {
             return redirect()->route('reservation.create');
         }
 
@@ -56,8 +54,7 @@ class SessionController extends Controller
      */
     public function edit(Session $session)
     {
-        if (Gate::denies('edit', $session))
-        {
+        if (Gate::denies('edit', $session)) {
             return redirect()->route('reservation.create');
         }
 
@@ -75,8 +72,7 @@ class SessionController extends Controller
      */
     public function update(UpdateSessionRequest $request, Session $session): RedirectResponse
     {
-        if (Gate::denies('update', $session))
-        {
+        if (Gate::denies('update', $session)) {
             return redirect()->route('reservation.create');
         }
 
@@ -93,8 +89,7 @@ class SessionController extends Controller
      */
     public function destroy(Session $session): RedirectResponse
     {
-        if (Gate::denies('delete', Session::class))
-        {
+        if (Gate::denies('delete', Session::class)) {
             return redirect()->route('reservation.create');
         }
 

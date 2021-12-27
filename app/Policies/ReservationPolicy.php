@@ -17,8 +17,7 @@ class ReservationPolicy
 
     public function show(User $user, User $reservationsUser): bool
     {
-        if ($user->isAdmin())
-        {
+        if ($user->isAdmin()) {
             return true;
         }
 
@@ -27,8 +26,7 @@ class ReservationPolicy
 
     public function edit(User $user, Reservation $reservation): bool
     {
-        if($user->isAdmin())
-        {
+        if ($user->isAdmin()) {
             return true;
         }
 
@@ -37,8 +35,7 @@ class ReservationPolicy
 
     public function update(User $user, Reservation $reservation): bool
     {
-        if($user->isAdmin())
-        {
+        if ($user->isAdmin()) {
             return true;
         }
 
@@ -47,8 +44,7 @@ class ReservationPolicy
 
     public function delete(User $user, Reservation $reservation): bool
     {
-        if($user->isAdmin())
-        {
+        if($user->isAdmin()) {
             return true;
         }
 

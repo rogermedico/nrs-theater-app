@@ -28,11 +28,8 @@ class ProcessFirstStepReservationRequest extends FormRequest
             'session' => 'required|exists:sessions,id'
         ];
 
-        if(!auth()->user())
-        {
-            return array_merge(
-                $rules,
-                [
+        if (!auth()->user()) {
+            return array_merge($rules, [
                     'name' => 'required|string',
                     'surname' => 'required|string',
                     'email' => 'required|email|unique:users,email',

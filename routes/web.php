@@ -25,11 +25,11 @@ Route::post('reservation/first', [ReservationController::class, 'processFirstSte
 Route::resource('reservation', ReservationController::class)->except('show');
 
 /** user routes */
-Route::get('user/login', [UserController::class, 'loginShow'])->name('user.login.show')->middleware('guest');
-Route::post('user/login', [UserController::class, 'login'])->name('user.login')->middleware('guest');
-Route::get('user/logout', [UserController::class, 'logout'])->name('user.logout')->middleware('auth');
-Route::put('user/{user}/password', [UserController::class, 'updatePassword'])->name('user.update.password')->middleware('auth');
-Route::get('user/{user}/reservations', [UserController::class, 'showReservations'])->name('user.reservations.show')->middleware('auth');
+Route::get('user/login', [UserController::class, 'loginShow'])->middleware('guest')->name('user.login.show');
+Route::post('user/login', [UserController::class, 'login'])->middleware('guest')->name('user.login');
+Route::get('user/logout', [UserController::class, 'logout'])->middleware('auth')->name('user.logout');
+Route::put('user/{user}/password', [UserController::class, 'updatePassword'])->middleware('auth')->name('user.update.password');
+Route::get('user/{user}/reservations', [UserController::class, 'showReservations'])->middleware('auth')->name('user.reservations.show');
 Route::resource('user', UserController::class)->except('show');
 
 /** session routes */

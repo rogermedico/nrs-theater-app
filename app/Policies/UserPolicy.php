@@ -9,15 +9,14 @@ class UserPolicy
 {
     use HandlesAuthorization;
 
-    public function index(User $user)
+    public function index(User $user): bool
     {
         return $user->isAdmin();
     }
 
     public function edit(User $user, User $editedUser): bool
     {
-        if($user->isAdmin())
-        {
+        if ($user->isAdmin()) {
             return true;
         }
 
@@ -26,8 +25,7 @@ class UserPolicy
 
     public function updateProfile(User $user, User $updatedUser): bool
     {
-        if($user->isAdmin())
-        {
+        if ($user->isAdmin()) {
             return true;
         }
 
@@ -36,8 +34,7 @@ class UserPolicy
 
     public function updatePassword(User $user, User $updatedUser): bool
     {
-        if($user->isAdmin())
-        {
+        if ($user->isAdmin()) {
             return true;
         }
 
@@ -46,8 +43,7 @@ class UserPolicy
 
     public function showReservations(User $user, User $showReservationsForUser): bool
     {
-        if($user->isAdmin())
-        {
+        if ($user->isAdmin()) {
             return true;
         }
 
@@ -56,8 +52,7 @@ class UserPolicy
 
     public function delete(User $user, User $userToDelete): bool
     {
-        if($user->isAdmin() && !$userToDelete->isAdmin())
-        {
+        if ($user->isAdmin() && !$userToDelete->isAdmin()) {
             return true;
         }
 

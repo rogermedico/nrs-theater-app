@@ -36,8 +36,7 @@ class UserController extends Controller
      */
     public function index()
     {
-        if (Gate::denies('index', auth()->user()))
-        {
+        if (Gate::denies('index', auth()->user())) {
             return redirect()->route('user.edit', auth()->user());
         }
 
@@ -79,8 +78,7 @@ class UserController extends Controller
      */
     public function edit(User $user)
     {
-        if (Gate::denies('edit', $user))
-        {
+        if (Gate::denies('edit', $user)) {
             return redirect()->route('user.edit', auth()->user());
         }
 
@@ -98,8 +96,7 @@ class UserController extends Controller
      */
     public function update(UpdateUserProfileRequest $request, User $user): RedirectResponse
     {
-        if (Gate::denies('updateProfile', $user))
-        {
+        if (Gate::denies('updateProfile', $user)) {
             return redirect()->route('reservation.create');
         }
 
@@ -117,8 +114,7 @@ class UserController extends Controller
      */
     public function updatePassword(UpdateUserPasswordRequest $request, User $user): RedirectResponse
     {
-        if (Gate::denies('updatePassword', $user))
-        {
+        if (Gate::denies('updatePassword', $user)) {
             return redirect()->route('reservation.create');
         }
 
@@ -137,14 +133,12 @@ class UserController extends Controller
      */
     public function showReservations(User $user)
     {
-        if (Gate::denies('showReservations', $user))
-        {
+        if (Gate::denies('showReservations', $user)) {
             return redirect()->route('user.reservations.show', auth()->user());
         }
 
         $reservations = [];
-        foreach($user->reservations as $reservation)
-        {
+        foreach ($user->reservations as $reservation) {
             $session = Session::find($reservation->session_id);
             $reservations[$session->name][Carbon::parse($session->date)->format('d/m/Y H:i')][] = [
                 'id' => $reservation->id,
@@ -153,7 +147,7 @@ class UserController extends Controller
             ];
         }
 
-        return view('users.reservations', compact('reservations','user'));
+        return view('users.reservations', compact('reservations', 'user'));
     }
 
     /**
@@ -165,8 +159,7 @@ class UserController extends Controller
      */
     public function destroy(Request $request, User $user): RedirectResponse
     {
-        if (Gate::denies('delete', $user))
-        {
+        if (Gate::denies('delete', $user)) {
             return redirect()->route('reservation.create');
         }
 

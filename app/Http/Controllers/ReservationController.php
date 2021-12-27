@@ -25,7 +25,12 @@ class ReservationController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth')->only(['index','edit','update','destroy']);
+        $this->middleware('auth')->only([
+            'index',
+            'edit',
+            'update',
+            'destroy',
+        ]);
     }
 
     /**
@@ -35,21 +40,19 @@ class ReservationController extends Controller
      */
     public function index()
     {
-        if (Gate::denies('index', auth()->user()))
-        {
+        if (Gate::denies('index', auth()->user())) {
             return redirect()->route('user.reservations.show', auth()->user());
         }
 
         $reservations = [];
-        foreach (Reservation::orderBy('row')->orderBy('column')->get() as $reservation)
-        {
+        foreach (Reservation::orderBy('row')->orderBy('column')->get() as $reservation) {
             $session = Session::find($reservation['session_id']);
             $user = User::find($reservation->user_id);
             $reservations[$session->name][Carbon::parse($session->date)->format('d/m/Y H:i')][] = [
                 'id' => $reservation->id,
                 'user' => $user,
                 'row' => $reservation->row,
-                'column' => $reservation->column
+                'column' => $reservation->column,
             ];
         }
 
@@ -65,7 +68,7 @@ class ReservationController extends Controller
     {
         return view('reservation.create', [
             'sessions' => Session::all(),
-            'createReservationFirstStepInfo' => session('createReservationFirstStepInfo')
+            'createReservationFirstStepInfo' => session('createReservationFirstStepInfo'),
         ]);
     }
 
@@ -94,10 +97,14 @@ class ReservationController extends Controller
         $occupiedSeats = array_map(function ($seat) {
             return $seat['row'] . '-' . $seat['column'];
         },
-            Session::find($createReservationFirstStepInfo['session'])->reservations()->select(['row', 'column'])->get()->toArray()
+            Session::find($createReservationFirstStepInfo['session'])
+                ->reservations()
+                ->select(['row', 'column'])
+                ->get()
+                ->toArray()
         );
 
-        if(auth()->user()) {
+        if (auth()->user()) {
             $userSeats = array_map(function ($seat) {
                 return $seat['row'] . '-' . $seat['column'];
             },
@@ -128,10 +135,8 @@ class ReservationController extends Controller
         $seats = $request->validated()['seats'];
         $createReservationFirstStepInfo = $request->session()->pull('createReservationFirstStepInfo');
 
-        if ($createReservationFirstStepInfo)
-        {
-            if (!auth()->user())
-            {
+        if ($createReservationFirstStepInfo) {
+            if (!auth()->user()) {
                 $user = User::create([
                     'name' => $createReservationFirstStepInfo['name'],
                     'surname' => $createReservationFirstStepInfo['surname'],
@@ -149,8 +154,7 @@ class ReservationController extends Controller
 
             $session = Session::find($createReservationFirstStepInfo['session']);
 
-            foreach($seats as $seat)
-            {
+            foreach ($seats as $seat) {
                 $rowColumn = explode('-', $seat);
                 $reservation = Reservation::create([
                     'user_id' => $user->id,
@@ -192,35 +196,42 @@ class ReservationController extends Controller
      */
     public function edit(Reservation $reservation)
     {
-        if (Gate::denies('edit', $reservation))
-        {
+        if (Gate::denies('edit', $reservation)) {
             return redirect()->route('user.reservations.show', auth()->user());
         }
 
-        $occupiedSeats = array_map(function ($seat) {
-            return $seat['row'] . '-' . $seat['column'];
-        },
-            Reservation::where('session_id',$reservation->session_id)
-                ->where(function ($q) use ($reservation) {
-                    $q->where('row', '!=', $reservation->row);
-                    $q->orWhere('column', '!=', $reservation->column);
-
-                })
+        $occupiedSeats = array_map(
+            function($seat)
+            {
+                return $seat['row'] . '-' . $seat['column'];
+            },
+            Reservation::where('session_id', $reservation->session_id)
+                ->where(
+                    function($q) use($reservation)
+                    {
+                        $q->where('row', '!=', $reservation->row);
+                        $q->orWhere('column', '!=', $reservation->column);
+                    }
+                )
                 ->select(['row','column'])
                 ->get()
                 ->toArray()
         );
 
-        $userSeats = array_map(function ($seat) {
-            return $seat['row'] . '-' . $seat['column'];
-        },
+        $userSeats = array_map(
+            function ($seat)
+            {
+                return $seat['row'] . '-' . $seat['column'];
+            },
             Reservation::where('session_id', $reservation->session_id)
                 ->where('user_id', $reservation->user_id)
-                ->where(function ($q) use ($reservation) {
-                    $q->where('row', '!=', $reservation->row);
-                    $q->orWhere('column', '!=', $reservation->column);
-
-                })
+                ->where(
+                    function($q) use($reservation)
+                    {
+                        $q->where('row', '!=', $reservation->row);
+                        $q->orWhere('column', '!=', $reservation->column);
+                    }
+                )
                 ->select(['row', 'column'])
                 ->get()
                 ->toArray()
@@ -244,8 +255,7 @@ class ReservationController extends Controller
      */
     public function update(UpdateReservationRequest $request, Reservation $reservation)
     {
-        if (Gate::denies('update', $reservation))
-        {
+        if (Gate::denies('update', $reservation)) {
             return redirect()->route('user.reservations.show', auth()->user());
         }
 
@@ -280,8 +290,7 @@ class ReservationController extends Controller
 
         $reservations = [];
         $user = User::find($reservation->user_id);
-        foreach($user->reservations as $reservation)
-        {
+        foreach ($user->reservations as $reservation) {
             $session = Session::find($reservation->session_id);
             $reservations[$session->name][Carbon::parse($session->date)->format('d/m/Y H:i')][] = [
                 'id' => $reservation->id,
@@ -290,14 +299,12 @@ class ReservationController extends Controller
             ];
         }
 
-        if (auth()->user()->id !== $reservation->user_id)
-        {
+        if (auth()->user()->id !== $reservation->user_id) {
             return redirect()->route('reservation.index')->with('message', __('Reservation updated'));
         } else {
             return view('users.reservations', compact('reservations','user'))
                 ->with('message', __('Reservation updated'));
         }
-
     }
 
     /**
@@ -308,8 +315,7 @@ class ReservationController extends Controller
      */
     public function destroy(Reservation $reservation): RedirectResponse
     {
-        if (Gate::denies('delete', $reservation))
-        {
+        if (Gate::denies('delete', $reservation)) {
             return redirect()->route('user.reservations.show', auth()->user());
         }
 

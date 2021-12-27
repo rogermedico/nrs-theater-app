@@ -2,7 +2,7 @@
 
 @section('main-content')
     <div class="offset-lg-2 col-lg-8 ">
-        <h1 class="serif">{{__('reservation')}}</h1>
+        <h1 class="serif">{{__('make reservation')}}</h1>
         <x-messages/>
         <x-errors/>
         <form class="needs-validation" novalidate method="post" action="{{route('reservation.store')}}">
