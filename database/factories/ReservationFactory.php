@@ -15,7 +15,7 @@ class ReservationFactory extends Factory
      *
      * @return array
      */
-    public function definition()
+    public function definition(): array
     {
         $uniqueSessionRowColumn = $this->assureUniqueSessionRowColumn();
         return [
@@ -26,7 +26,7 @@ class ReservationFactory extends Factory
         ];
     }
 
-    private function assureUniqueSessionRowColumn()
+    private function assureUniqueSessionRowColumn(): array
     {
         do{
             $session = Session::all()->random()->id;

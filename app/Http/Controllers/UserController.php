@@ -83,6 +83,7 @@ class UserController extends Controller
         {
             return redirect()->route('user.edit', auth()->user());
         }
+
         return view('users.profile', [
             'user' => $user
         ]);
@@ -101,7 +102,9 @@ class UserController extends Controller
         {
             return redirect()->route('reservation.create');
         }
+
         $user->update($request->validated());
+
         return redirect()->back()->with('message', __('Profile updated'));
     }
 

@@ -25,7 +25,7 @@
                             <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
                                 <li><a class="dropdown-item" href="{{route('user.index')}}">{{__('Manage users')}}</a></li>
                                 <li><a class="dropdown-item" href="{{route('reservation.index')}}">{{__('Manage reservations')}}</a></li>
-                                <li><a class="dropdown-item" href="{{route('reservation.index')}}">{{__('Manage sessions')}}</a></li>
+                                <li><a class="dropdown-item" href="{{route('session.index')}}">{{__('Manage sessions')}}</a></li>
                             </ul>
                         </li>
                     @endif
