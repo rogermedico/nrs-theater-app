@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Hash;
 use Tests\TestCase;
 
 class UserTest extends TestCase
@@ -317,7 +318,155 @@ class UserTest extends TestCase
             ->assertOk();
     }
 
-    //updatepassword
+    public function test_guest_user_can_not_update_any_user_password()
+    {
+        $user = User::factory()->create();
+
+        $response = $this ->put('user/' . $user->id . '/password', [
+            'password_old' => 'password',
+            'password' => 'password2',
+            'password_confirmation' => 'password2'
+        ]);
+
+        $user->refresh();
+        $this->assertFalse(Hash::check('password2', $user->password));
+        $this->assertTrue(Hash::check('password', $user->password));
+
+        $this->followRedirects($response)
+            ->assertViewIs('reservation.create')
+            ->assertOk();
+    }
+
+    public function test_authenticated_not_admin_user_can_update_his_own_password()
+    {
+        $user = User::factory()->create();
+
+        $response = $this->from('user/'. $user->id .'/edit')
+            ->actingAs($user,'web')
+            ->put('user/' . $user->id . '/password', [
+                'password_old' => 'password',
+                'password' => 'newpassword',
+                'password_confirmation' => 'newpassword'
+            ]);
+
+
+        $user->refresh();
+        $this->assertFalse(Hash::check('password', $user->password));
+        $this->assertTrue(Hash::check('newpassword', $user->password));
+
+        $response->assertRedirect('user/'. $user->id .'/edit');
+        $this->followRedirects($response)
+            ->assertViewIs('users.profile')
+            ->assertViewHas([
+                'user' => $user
+            ])
+            ->assertOk();
+    }
+
+    public function test_authenticated_not_admin_user_can_not_update_other_user_password()
+    {
+        $user = User::factory()->create();
+        $user2 = User::factory()->create();
+
+        $response = $this->actingAs($user,'web')
+            ->put('user/' . $user2->id . '/password', [
+                'password_old' => 'password',
+                'password' => 'password2',
+                'password_confirmation' => 'password2'
+            ]);
+
+        $user2->refresh();
+        $this->assertFalse(Hash::check('password2', $user2->password));
+        $this->assertTrue(Hash::check('password', $user2->password));
+
+        $this->followRedirects($response)
+            ->assertViewIs('reservation.create')
+            ->assertOk();
+    }
+
+    public function test_admin_user_can_update_other_user_password_without_old_password()
+    {
+        $user = User::factory()->create();
+        $admin = User::factory()->create([
+            'admin' => true
+        ]);
+
+        $response = $this->from('user/'. $user->id .'/edit')
+            ->actingAs($admin,'web')
+            ->put('user/' . $user->id . '/password', [
+                'password' => 'newpassword',
+                'password_confirmation' => 'newpassword'
+            ]);
+
+        $user->refresh();
+        $this->assertFalse(Hash::check('password', $user->password));
+        $this->assertTrue(Hash::check('newpassword', $user->password));
+
+        $response->assertRedirect('user/'. $user->id .'/edit');
+        $this->followRedirects($response)
+            ->assertViewIs('users.profile')
+            ->assertViewHas([
+                'user' => $user
+            ])
+            ->assertOk();
+    }
+
+    public function test_admin_user_can_not_update_his_own_password_without_old_password()
+    {
+        $admin = User::factory()->create([
+            'admin' => true
+        ]);
+
+        $response = $this->from('user/'. $admin->id .'/edit')
+            ->actingAs($admin,'web')
+            ->put('user/' . $admin->id . '/password', [
+                'password' => 'newpassword',
+                'password_confirmation' => 'newpassword'
+            ])
+            ->assertSessionHasErrors([
+                'password_old',
+            ]);
+
+        $admin->refresh();
+        $this->assertTrue(Hash::check('password', $admin->password));
+        $this->assertFalse(Hash::check('newpassword', $admin->password));
+
+        $response->assertRedirect('user/'. $admin->id .'/edit');
+        $this->followRedirects($response)
+            ->assertViewIs('users.profile')
+            ->assertViewHas([
+                'user' => $admin
+            ])
+            ->assertOk();
+    }
+
+    public function test_admin_user_can_update_his_own_password()
+    {
+        $admin = User::factory()->create([
+            'admin' => true
+        ]);
+
+        $response = $this->from('user/'. $admin->id .'/edit')
+            ->actingAs($admin,'web')
+            ->put('user/' . $admin->id . '/password', [
+                'password_old' => 'password',
+                'password' => 'newpassword',
+                'password_confirmation' => 'newpassword'
+            ]);
+
+        $admin->refresh();
+        $this->assertFalse(Hash::check('password', $admin->password));
+        $this->assertTrue(Hash::check('newpassword', $admin->password));
+
+        $response->assertRedirect('user/'. $admin->id .'/edit');
+        $this->followRedirects($response)
+            ->assertViewIs('users.profile')
+            ->assertViewHas([
+                'user' => $admin
+            ])
+            ->assertOk();
+    }
+
     //show reservations
     //destroy
     //loginshow

@@ -16,6 +16,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
@@ -116,6 +117,12 @@ class UserController extends Controller
     {
         if (Gate::denies('updatePassword', $user)) {
             return redirect()->route('reservation.create');
+        }
+
+        if (isset($request->validated()['password_old'])) {
+           if (!Hash::check($request->validated()['password_old'], $user->password)) {
+               return redirect()->back()->withErrors(['password_old' => __('Incorrect old password')]);
+           };
         }
 
         $user->update([
