@@ -104,12 +104,13 @@ The validation of the fields is always made using custom requests, as it is expe
 3. Execute ``npm install`` to install npm dependencies (Bootstrap)
 4. Execute ``npm run dev`` to compile the npm dependencies
 5. Copy env.example file to .env and run ``php artisan key:generate`` to regenerate the app key
-6. Create a database and fill the .env file with the correct info (DB connection)
-7. Optionally if you want to run tests: Create a second database and fill the DB_TEST_DATABASE field
+6. Run the command ``php artisan storage:link`` to allow access to the images from public directory
+7. Create a database and fill the .env file with the correct info (DB connection)
+8. Optionally if you want to run tests: Create a second database and fill the DB_TEST_DATABASE field
  in the .env file.
-8. Seed the DB running the proper command. Ex:``php artisan migrate:refresh --seed``
-9. Execute the serve command ``php artisan serve`` or open your LAMP directory and access to the project folder
-10. Access [localhost:8000](http://localhost:8000) (typically) and see the project
+9. Seed the DB running the proper command. Ex:``php artisan migrate:refresh --seed``
+10. Execute the serve command ``php artisan serve`` or open your LAMP directory and access to the project folder
+11. Access [localhost:8000](http://localhost:8000) (typically) and see the project
 
 ## Tests
 
