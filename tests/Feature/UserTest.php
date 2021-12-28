@@ -673,10 +673,85 @@ class UserTest extends TestCase
             ->assertOk();
     }
 
+    public function test_guest_user_can_view_login_form()
+    {
+        $response = $this->get('user/login');
 
+        $response->assertViewIs('users.login')
+            ->assertOk();
+    }
 
-    //loginshow
-    //login
-    //logout
+    public function test_authenticated_user_can_not_view_login_form()
+    {
+        $user = User::factory()->create();
 
+        $response = $this->actingAs($user, 'web')
+            ->get('user/login');
+
+        $this->followRedirects($response)
+            ->assertViewIs('reservation.create')
+            ->assertOk();
+    }
+
+    public function test_guest_user_can_login()
+    {
+        $user = User::factory()->create();
+
+        $response = $this->post('user/login', [
+            'email' => $user->email,
+            'password' => 'password'
+        ]);
+
+        $this->assertAuthenticatedAs($user);
+
+        $this->followRedirects($response)
+            ->assertViewIs('reservation.create')
+            ->assertOk();
+    }
+
+    public function test_authenticated_user_can_not_login()
+    {
+        $user = User::factory()->create();
+        $this->actingAs($user, 'web');
+
+        $this->assertAuthenticatedAs($user);
+
+        $response = $this->post('user/login', [
+            'email' => $user->email,
+            'password' => 'password'
+        ]);
+
+        $this->assertAuthenticatedAs($user);
+
+        /** redirected here by middleware guest */
+        $this->followRedirects($response)
+            ->assertViewIs('reservation.create')
+            ->assertOk();
+    }
+
+    public function test_guest_user_can_not_logout()
+    {
+        $response = $this->get('user/logout');
+
+        /** redirected by middleware auth */
+        $this->followRedirects($response)
+            ->assertViewIs('reservation.create')
+            ->assertOk();
+    }
+
+    public function test_authenticated_user_can_logout()
+    {
+        $user = User::factory()->create();
+        $this->actingAs($user, 'web');
+
+        $this->assertAuthenticatedAs($user);
+
+        $response = $this->get('user/logout');
+
+        $this->assertNull(auth()->user());
+
+        $this->followRedirects($response)
+            ->assertViewIs('reservation.create')
+            ->assertOk();
+    }
 }
