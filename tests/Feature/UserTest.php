@@ -2,7 +2,10 @@
 
 namespace Tests\Feature;
 
+use App\Models\Reservation;
+use App\Models\Session;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Hash;
 use Tests\TestCase;
@@ -467,8 +470,211 @@ class UserTest extends TestCase
             ->assertOk();
     }
 
-    //show reservations
-    //destroy
+    public function test_guest_user_can_not_view_reservations()
+    {
+        $response = $this->get('user/1/reservations');
+
+        $this->followRedirects($response)
+            ->assertViewIs('reservation.create')
+            ->assertOk();
+    }
+
+    public function test_authenticated_not_admin_user_can_view_his_reservations()
+    {
+        $user = User::factory()->create();
+        User::factory()->create();
+        Session::factory()->create();
+        Reservation::factory(10)->create();
+
+        $response = $this->actingAs($user,'web')
+            ->get('user/' . $user->id .'/reservations');
+
+        $reservations = [];
+        foreach ($user->reservations as $reservation) {
+            $session = Session::find($reservation->session_id);
+            $reservations[$session->name][Carbon::parse($session->date)->format('d/m/Y H:i')][] = [
+                'id' => $reservation->id,
+                'row' => $reservation->row,
+                'column' => $reservation->column
+            ];
+        }
+
+        $response->assertViewIs('users.reservations')
+            ->assertViewHas([
+                'reservations' => $reservations,
+                'user' => $user
+            ])
+            ->assertOk();
+    }
+
+    public function test_authenticated_not_admin_user_can_not_view_other_user_reservations()
+    {
+        $user = User::factory()->create();
+        $user2 = User::factory()->create();
+        Session::factory()->create();
+        Reservation::factory(10)->create();
+
+        $response = $this->actingAs($user,'web')
+            ->get('user/' . $user2->id .'/reservations');
+
+        $reservations = [];
+        foreach ($user->reservations as $reservation) {
+            $session = Session::find($reservation->session_id);
+            $reservations[$session->name][Carbon::parse($session->date)->format('d/m/Y H:i')][] = [
+                'id' => $reservation->id,
+                'row' => $reservation->row,
+                'column' => $reservation->column
+            ];
+        }
+
+        $this->followRedirects($response)
+            ->assertViewIs('users.reservations')
+            ->assertViewHas([
+                'reservations' => $reservations,
+                'user' => $user
+            ])
+            ->assertOk();
+    }
+
+    public function test_admin_user_can_view_other_user_reservations()
+    {
+        $user = User::factory()->create();
+        $admin = User::factory()->create([
+            'admin' => true
+        ]);
+        Session::factory()->create();
+        Reservation::factory(10)->create();
+
+        $response = $this->actingAs($admin,'web')
+            ->get('user/' . $user->id .'/reservations');
+
+        $reservations = [];
+        foreach ($user->reservations as $reservation) {
+            $session = Session::find($reservation->session_id);
+            $reservations[$session->name][Carbon::parse($session->date)->format('d/m/Y H:i')][] = [
+                'id' => $reservation->id,
+                'row' => $reservation->row,
+                'column' => $reservation->column
+            ];
+        }
+
+        $this->followRedirects($response)
+            ->assertViewIs('users.reservations')
+            ->assertViewHas([
+                'reservations' => $reservations,
+                'user' => $user
+            ])
+            ->assertOk();
+    }
+
+    public function test_admin_user_can_view_his_own_reservations()
+    {
+        User::factory()->create();
+        $admin = User::factory()->create([
+            'admin' => true
+        ]);
+        Session::factory()->create();
+        Reservation::factory(10)->create();
+
+        $response = $this->actingAs($admin,'web')
+            ->get('user/' . $admin->id .'/reservations');
+
+        $reservations = [];
+        foreach ($admin->reservations as $reservation) {
+            $session = Session::find($reservation->session_id);
+            $reservations[$session->name][Carbon::parse($session->date)->format('d/m/Y H:i')][] = [
+                'id' => $reservation->id,
+                'row' => $reservation->row,
+                'column' => $reservation->column
+            ];
+        }
+
+        $this->followRedirects($response)
+            ->assertViewIs('users.reservations')
+            ->assertViewHas([
+                'reservations' => $reservations,
+                'user' => $admin
+            ])
+            ->assertOk();
+    }
+
+    public function test_guest_user_can_not_destroy()
+    {
+        $response = $this->delete('user/1');
+
+        $this->followRedirects($response)
+            ->assertViewIs('reservation.create')
+            ->assertOk();
+    }
+
+    public function test_authenticated_not_admin_user_can_destroy_himself()
+    {
+        $user = User::factory()->create();
+
+        $this->assertEquals(1, User::count());
+
+        $response = $this->actingAs($user,'web')
+            ->delete('user/' . $user->id);
+
+        $this->assertEquals(0, User::count());
+
+        $this->followRedirects($response)
+            ->assertViewIs('reservation.create')
+            ->assertOk();
+    }
+
+    public function test_authenticated_not_admin_user_can_not_destroy_others()
+    {
+        $user = User::factory()->create();
+        $user2 = User::factory()->create();
+
+        $response = $this->actingAs($user,'web')
+            ->delete('user/' . $user2->id);
+
+        $this->assertEquals(2, User::count());
+
+        $this->followRedirects($response)
+            ->assertViewIs('reservation.create')
+            ->assertOk();
+    }
+
+    public function test_admin_user_can_destroy_others()
+    {
+        $user = User::factory()->create();
+        $admin = User::factory()->create([
+            'admin' => true
+        ]);
+
+        $response = $this->from('user')
+            ->actingAs($admin,'web')
+            ->delete('user/' . $user->id);
+
+        $this->assertEquals(1, User::count());
+
+        $response->assertRedirect('user');
+        $this->followRedirects($response)
+            ->assertViewIs('admin.users')
+            ->assertOk();
+    }
+
+    public function test_admin_user_can_not_destroy_himself()
+    {
+        $admin = User::factory()->create([
+            'admin' => true
+        ]);
+
+        $response = $this->actingAs($admin,'web')
+            ->delete('user/' . $admin->id);
+
+        $this->assertEquals(1, User::count());
+
+        $this->followRedirects($response)
+            ->assertViewIs('reservation.create')
+            ->assertOk();
+    }
+
+
+
     //loginshow
     //login
     //logout

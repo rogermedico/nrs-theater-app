@@ -56,6 +56,10 @@ class UserPolicy
             return true;
         }
 
+        if ($user->isAdmin() && $user->id === $userToDelete->id) {
+            return false;
+        }
+
         return $user->id === $userToDelete->id;
     }
 }
