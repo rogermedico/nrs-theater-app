@@ -33,4 +33,4 @@ Route::get('user/{user}/reservations', [UserController::class, 'showReservations
 Route::resource('user', UserController::class)->except('show');
 
 /** session routes */
-Route::resource('session', SessionController::class)->except('create','show',)->middleware('auth');
+Route::resource('session', SessionController::class)->except('create','show',)->middleware('admin');

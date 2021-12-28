@@ -20,10 +20,6 @@ class SessionController extends Controller
      */
     public function index()
     {
-        if (Gate::denies('index', auth()->user())) {
-            return redirect()->route('reservation.create');
-        }
-
         return view('session.sessions', [
             'sessions' => Session::orderBy('date')->get()
         ]);
@@ -37,10 +33,6 @@ class SessionController extends Controller
      */
     public function store(StoreSessionRequest $request): RedirectResponse
     {
-        if (Gate::denies('store', Session::class)) {
-            return redirect()->route('reservation.create');
-        }
-
         Session::create($request->validated());
 
         return redirect()->route('session.index')->with('message', __('Session created'));
@@ -54,10 +46,6 @@ class SessionController extends Controller
      */
     public function edit(Session $session)
     {
-        if (Gate::denies('edit', $session)) {
-            return redirect()->route('reservation.create');
-        }
-
         return view('session.edit-session', [
             'session' => $session
         ]);
@@ -72,10 +60,6 @@ class SessionController extends Controller
      */
     public function update(UpdateSessionRequest $request, Session $session): RedirectResponse
     {
-        if (Gate::denies('update', $session)) {
-            return redirect()->route('reservation.create');
-        }
-
         $session->update($request->validated());
 
         return redirect()->route('session.index')->with('message', __('Session updated'));
@@ -89,10 +73,6 @@ class SessionController extends Controller
      */
     public function destroy(Session $session): RedirectResponse
     {
-        if (Gate::denies('delete', Session::class)) {
-            return redirect()->route('reservation.create');
-        }
-
         $session->delete();
 
         return redirect()->back()->with('message', __('Session deleted'));
