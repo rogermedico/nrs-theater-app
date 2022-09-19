@@ -1,0 +1,34 @@
+version: '3.2'
+
+services:
+  app:
+    build:
+      dockerfile: .docker/php/Dockerfile
+      context: .
+      args:
+        UID: $U_ID
+    ports:
+      - 8080:80
+    volumes:
+      - .docker/apache/000-default_dev.conf:/etc/apache2/sites-available/000-default.conf:ro
+      - ./:/var/www
+    depends_on:
+      - db
+      - phpmyadmin
+
+  db:
+    image: mysql
+    restart: always
+    environment:
+      MYSQL_DATABASE: laravel
+      MYSQL_ROOT_PASSWORD: password
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    ports:
+      - 8081:80
+    environment:
+      - PMA_HOST=db
+    depends_on:
+      - db
+
