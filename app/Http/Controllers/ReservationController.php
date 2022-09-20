@@ -21,7 +21,6 @@ class ReservationController extends Controller
 {
     /**
      * Constructor, apply middleware auth to specific routes
-     *
      */
     public function __construct()
     {
@@ -101,8 +100,7 @@ class ReservationController extends Controller
                 ->reservations()
                 ->select(['row', 'column'])
                 ->get()
-                ->toArray()
-        );
+                ->toArray());
 
         if (auth()->user()) {
             $userSeats = array_map(function ($seat) {
@@ -112,8 +110,7 @@ class ReservationController extends Controller
                 ->where('user_id', auth()->user()->id)
                 ->select(['row', 'column'])
                 ->get()
-                ->toArray()
-            );
+                ->toArray());
 
             $occupiedSeats = array_diff($occupiedSeats, $userSeats);
         }
@@ -141,12 +138,12 @@ class ReservationController extends Controller
                     'name' => $createReservationFirstStepInfo['name'],
                     'surname' => $createReservationFirstStepInfo['surname'],
                     'email' => $createReservationFirstStepInfo['email'],
-                    'password' => $createReservationFirstStepInfo['password']
+                    'password' => $createReservationFirstStepInfo['password'],
                 ]);
 
                 Auth::attempt([
                     'email' => $user->email,
-                    'password' => $createReservationFirstStepInfo['password']
+                    'password' => $createReservationFirstStepInfo['password'],
                 ]);
             } else {
                 $user = auth()->user();
@@ -176,15 +173,14 @@ class ReservationController extends Controller
                         . ' for the "'
                         . $session->name
                         . '" theater play on '
-                        . Carbon::parse($session->date)->format('d/m/Y H:i')
-                    );
+                        . Carbon::parse($session->date)->format('d/m/Y H:i'));
             }
 
             session(['message' => __('Reservation confirmed, check my reservations section to manage reservations')]);
         }
 
         return view('reservation.create', [
-            'sessions' => Session::all()
+            'sessions' => Session::all(),
         ]);
     }
 
@@ -201,33 +197,29 @@ class ReservationController extends Controller
         }
 
         $occupiedSeats = array_map(
-            function($seat)
-            {
+            function ($seat) {
                 return $seat['row'] . '-' . $seat['column'];
             },
             Reservation::where('session_id', $reservation->session_id)
                 ->where(
-                    function($q) use($reservation)
-                    {
+                    function ($q) use ($reservation) {
                         $q->where('row', '!=', $reservation->row);
                         $q->orWhere('column', '!=', $reservation->column);
                     }
                 )
-                ->select(['row','column'])
+                ->select(['row', 'column'])
                 ->get()
                 ->toArray()
         );
 
         $userSeats = array_map(
-            function ($seat)
-            {
+            function ($seat) {
                 return $seat['row'] . '-' . $seat['column'];
             },
             Reservation::where('session_id', $reservation->session_id)
                 ->where('user_id', $reservation->user_id)
                 ->where(
-                    function($q) use($reservation)
-                    {
+                    function ($q) use ($reservation) {
                         $q->where('row', '!=', $reservation->row);
                         $q->orWhere('column', '!=', $reservation->column);
                     }
@@ -280,12 +272,11 @@ class ReservationController extends Controller
                 . ' for the "'
                 . $session->name
                 . '" theater play on '
-                . Carbon::parse($session->date)->format('d/m/Y H:i')
-            );
+                . Carbon::parse($session->date)->format('d/m/Y H:i'));
 
         $reservation->update([
             'row' => $rowColumn[0],
-            'column' => $rowColumn[1]
+            'column' => $rowColumn[1],
         ]);
 
         $reservations = [];
@@ -295,14 +286,14 @@ class ReservationController extends Controller
             $reservations[$session->name][Carbon::parse($session->date)->format('d/m/Y H:i')][] = [
                 'id' => $reservation->id,
                 'row' => $reservation->row,
-                'column' => $reservation->column
+                'column' => $reservation->column,
             ];
         }
 
         if (auth()->user()->id !== $reservation->user_id) {
             return redirect()->route('reservation.index')->with('message', __('Reservation updated'));
         } else {
-            return view('users.reservations', compact('reservations','user'))
+            return redirect()->route('user.reservations.show', auth()->user())->with(compact('reservations', 'user'))
                 ->with('message', __('Reservation updated'));
         }
     }
@@ -334,8 +325,7 @@ class ReservationController extends Controller
                 . ' for the "'
                 . $session->name
                 . '" theater play on '
-                . Carbon::parse($session->date)->format('d/m/Y H:i')
-            );
+                . Carbon::parse($session->date)->format('d/m/Y H:i'));
 
         $reservation->delete();
 
