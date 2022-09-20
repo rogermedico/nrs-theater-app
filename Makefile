@@ -33,21 +33,25 @@ build: ## Rebuilds all the containers
 
 prepare: ## Runs backend commands
 	$(MAKE) composer-install
-	$(MAKE) generate-application-key
-	$(MAKE) fix-perms
 	$(MAKE) check-dot-env
+	$(MAKE) generate-application-key
+	$(MAKE) generate-storage-link
+	$(MAKE) fix-perms
 	$(MAKE) migrate-db
 	$(MAKE) npm-install
 	$(MAKE) npm-dev-compile-js-css
 
-check-dot-env: ## Check if .env exists and if not create it
-	if [ ! -f ".env" ] && [ -f ".env.example" ]; then cp .env.example .env; else echo ".env already exists or .env.example doesn't exist"; exit 0; fi
-
 composer-install: ## Installs composer dependencies
 	U_ID=${UID} docker-compose exec --user ${UID} ${DOCKER_CONTAINER} composer install --no-scripts --no-interaction --optimize-autoloader
 
+check-dot-env: ## Check if .env exists and if not create it
+	if [ ! -f ".env" ] && [ -f ".env.example" ]; then cp .env.example .env; else echo ".env already exists or .env.example doesn't exist"; exit 0; fi
+
 generate-application-key: ## Generate laravel application key
 	U_ID=${UID} docker-compose exec --user ${UID} ${DOCKER_CONTAINER} php artisan key:generate
+
+generate-storage-link: ## Generate storage soft link
+	U_ID=${UID} docker-compose exec --user ${UID} ${DOCKER_CONTAINER} php artisan storage:link
 
 fix-perms: ## Fix folders permissions
 	sudo chown -R ${USER}:www-data storage/ bootstrap/cache/
