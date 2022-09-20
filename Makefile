@@ -68,3 +68,6 @@ npm-dev-compile-js-css: ## Installs npm dependencies
 
 bash: ## ssh's into the be container
 	U_ID=${UID} docker-compose exec --user ${UID} ${DOCKER_CONTAINER} bash
+
+test: ##run the tests
+	U_ID=${UID} docker-compose exec --user ${UID} ${DOCKER_CONTAINER} php artisan test
