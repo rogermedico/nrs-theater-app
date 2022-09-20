@@ -22,8 +22,9 @@ services:
     image: mysql
     restart: always
     environment:
-      MYSQL_DATABASE: laravel
       MYSQL_ROOT_PASSWORD: password
+    volumes:
+      - .docker/mysql:/docker-entrypoint-initdb.d
 
   phpmyadmin:
     image: phpmyadmin/phpmyadmin
