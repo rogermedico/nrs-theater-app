@@ -99,7 +99,7 @@ the constructor, because different methods of the resource have to have differen
 The validation of the fields is always made using custom requests, as it is expected from a well-done project.
 
 ## Run Project (local environment)
-All steps tested on Ubuntu OS.
+All steps tested on Ubuntu.
 ### Needed commands
 
 Check that you have make, docker and docker-compose installed on your system running the following commands:
