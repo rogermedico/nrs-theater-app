@@ -63,8 +63,12 @@ migrate-db: ## Migrate and seed app
 npm-install: ## Installs npm dependencies
 	U_ID=${UID} docker-compose exec --user ${UID} ${DOCKER_CONTAINER} npm i
 
-npm-dev-compile-js-css: ## Installs npm dependencies
+npm-dev-compile-js-css: ## Compile all css and js files
 	U_ID=${UID} docker-compose exec --user ${UID} ${DOCKER_CONTAINER} npm run dev
+
+update-dependencies: ## Updates dependencies
+	U_ID=${UID} docker-compose exec --user ${UID} ${DOCKER_CONTAINER} composer update;
+	U_ID=${UID} docker-compose exec --user ${UID} ${DOCKER_CONTAINER} npm update;
 
 bash: ## ssh's into the be container
 	U_ID=${UID} docker-compose exec --user ${UID} ${DOCKER_CONTAINER} bash
