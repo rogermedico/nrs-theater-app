@@ -25,7 +25,7 @@ class ProcessFirstStepReservationRequest extends FormRequest
     public function rules(): array
     {
         $rules = [
-            'session' => 'required|exists:sessions,id'
+            'session' => 'required|exists:sessions,id',
         ];
 
         if (!auth()->user()) {
@@ -34,8 +34,7 @@ class ProcessFirstStepReservationRequest extends FormRequest
                     'surname' => 'required|string',
                     'email' => 'required|email|unique:users,email',
                     'password' => 'required|min:8|confirmed',
-                ]
-            );
+                ]);
         }
 
         return $rules;

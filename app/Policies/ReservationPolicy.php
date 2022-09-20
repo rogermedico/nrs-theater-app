@@ -44,7 +44,7 @@ class ReservationPolicy
 
     public function delete(User $user, Reservation $reservation): bool
     {
-        if($user->isAdmin()) {
+        if ($user->isAdmin()) {
             return true;
         }
 

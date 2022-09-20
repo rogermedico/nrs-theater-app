@@ -13,7 +13,7 @@ class Session extends Model
     public $fillable = [
         'name',
         'date',
-        'ticket_price'
+        'ticket_price',
     ];
 
     protected $hidden = [

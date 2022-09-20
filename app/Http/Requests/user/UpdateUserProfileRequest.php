@@ -32,7 +32,7 @@ class UpdateUserProfileRequest extends FormRequest
             'email' => [
                 'required',
                 'email',
-                Rule::unique('users','email')->ignore($user->id),
+                Rule::unique('users', 'email')->ignore($user->id),
             ]
         ];
     }

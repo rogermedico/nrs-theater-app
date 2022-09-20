@@ -22,7 +22,6 @@ class UserController extends Controller
 {
     /**
      * Constructor, apply middleware auth to specific routes
-     *
      */
     public function __construct()
     {
@@ -31,12 +30,12 @@ class UserController extends Controller
             'edit',
             'update',
             'destroy',
-            'logout'
+            'logout',
         ]);
 
         $this->middleware('guest')->only([
             'create',
-            'store'
+            'store',
         ]);
     }
 
@@ -52,7 +51,7 @@ class UserController extends Controller
         }
 
         return view('admin.users', [
-            'users' => User::all()
+            'users' => User::all(),
         ]);
     }
 
@@ -94,7 +93,7 @@ class UserController extends Controller
         }
 
         return view('users.profile', [
-            'user' => $user
+            'user' => $user,
         ]);
     }
 
@@ -130,13 +129,13 @@ class UserController extends Controller
         }
 
         if (isset($request->validated()['password_old'])) {
-           if (!Hash::check($request->validated()['password_old'], $user->password)) {
-               return redirect()->back()->withErrors(['password_old' => __('Incorrect old password')]);
-           };
+            if (!Hash::check($request->validated()['password_old'], $user->password)) {
+                return redirect()->back()->withErrors(['password_old' => __('Incorrect old password')]);
+            };
         }
 
         $user->update([
-            'password' => $request->validated()['password']
+            'password' => $request->validated()['password'],
         ]);
 
         return redirect()->back()->with('message', __('Password updated'));
@@ -160,7 +159,7 @@ class UserController extends Controller
             $reservations[$session->name][Carbon::parse($session->date)->format('d/m/Y H:i')][] = [
                 'id' => $reservation->id,
                 'row' => $reservation->row,
-                'column' => $reservation->column
+                'column' => $reservation->column,
             ];
         }
 
@@ -180,9 +179,10 @@ class UserController extends Controller
             return redirect()->route('reservation.create');
         }
 
-        /** user deleting his own account */
-        if(auth()->user() === $user)
-        {
+        /**
+         * User deleting his own account
+        */
+        if (auth()->user() === $user) {
             Auth::logout();
             $request->session()->invalidate();
             $request->session()->regenerateToken();

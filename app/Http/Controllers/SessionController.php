@@ -21,7 +21,7 @@ class SessionController extends Controller
     public function index()
     {
         return view('session.sessions', [
-            'sessions' => Session::orderBy('date')->get()
+            'sessions' => Session::orderBy('date')->get(),
         ]);
     }
 
@@ -47,7 +47,7 @@ class SessionController extends Controller
     public function edit(Session $session)
     {
         return view('session.edit-session', [
-            'session' => $session
+            'session' => $session,
         ]);
     }
 

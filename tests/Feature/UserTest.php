@@ -32,7 +32,7 @@ class UserTest extends TestCase
         $this->followRedirects($response)
             ->assertViewIs('users.profile')
             ->assertViewHas([
-                'user' => $user
+                'user' => $user,
             ])
             ->assertOk();
     }
@@ -40,7 +40,7 @@ class UserTest extends TestCase
     public function test_admin_user_can_see_users_list()
     {
         $user = User::factory()->create([
-            'admin' => true
+            'admin' => true,
         ]);
 
         $response = $this->actingAs($user, 'web')
@@ -57,13 +57,13 @@ class UserTest extends TestCase
             'surname' => 'medico',
             'email' => 'test',
             'password' => 'password',
-            'password_confirmation' => 'password2'
+            'password_confirmation' => 'password2',
         ];
 
         $response = $this->post('user', $userRequest)
             ->assertSessionHasErrors([
                 'email',
-                'password'
+                'password',
             ]);
 
         $this->assertEquals(0, User::count());
@@ -82,7 +82,7 @@ class UserTest extends TestCase
             'surname' => 'medico',
             'email' => 'test@gmail.com',
             'password' => 'password',
-            'password_confirmation' => 'password'
+            'password_confirmation' => 'password',
         ]);
 
         $this->assertEquals(1, User::count());
@@ -112,24 +112,28 @@ class UserTest extends TestCase
         $user = User::factory()->create();
         $user2 = User::factory()->create();
 
-        /** his own edit profile */
+        /**
+         * His own edit profile
+        */
         $response = $this->actingAs($user, 'web')
             ->get('user/' . $user->id . '/edit');
 
         $response->assertViewIs('users.profile')
             ->assertViewHas([
-                'user' => $user
+                'user' => $user,
             ])
             ->assertOk();
 
-        /** try to edit other user profile but gets redirected to his own profile */
+        /**
+         * Try to edit other user profile but gets redirected to his own profile
+        */
         $response = $this->actingAs($user, 'web')
             ->get('user/' . $user2->id . '/edit');
 
         $this->followRedirects($response)
             ->assertViewIs('users.profile')
             ->assertViewHas([
-                'user' => $user
+                'user' => $user,
             ])
             ->assertOk();
     }
@@ -138,26 +142,30 @@ class UserTest extends TestCase
     {
         $user = User::factory()->create();
         $admin = User::factory()->create([
-            'admin' => true
+            'admin' => true,
         ]);
 
-        /** user edit profile */
+        /**
+         * User edit profile
+        */
         $response = $this->actingAs($admin, 'web')
             ->get('user/' . $user->id . '/edit');
 
         $response->assertViewIs('users.profile')
             ->assertViewHas([
-                'user' => $user
+                'user' => $user,
             ])
             ->assertOk();
 
-        /** admin edit profile */
+        /**
+         * Admin edit profile
+        */
         $response = $this->actingAs($admin, 'web')
             ->get('user/' . $admin->id . '/edit');
 
         $response->assertViewIs('users.profile')
             ->assertViewHas([
-                'user' => $admin
+                'user' => $admin,
             ])
             ->assertOk();
     }
@@ -170,7 +178,7 @@ class UserTest extends TestCase
             'email' => 'test@gmail.com'
         ]);
 
-        $response = $this ->put('user/' . $user->id, [
+        $response = $this->put('user/' . $user->id, [
             'name' => 'userName',
             'surname' => 'userSurname',
             'email' => 'useremail@gmail.com',
@@ -206,8 +214,10 @@ class UserTest extends TestCase
             'email' => 'anothertestemail@gmail.com'
         ]);
 
-        /** user can not edit other user info */
-        $response = $this->actingAs($user,'web')
+        /**
+         * User can not edit other user info
+        */
+        $response = $this->actingAs($user, 'web')
             ->put('user/' . $user2->id, [
                 'name' => 'userName',
                 'surname' => 'userSurname',
@@ -230,9 +240,11 @@ class UserTest extends TestCase
             ->assertViewIs('reservation.create')
             ->assertOk();
 
-        /** user can edit his own info */
+        /**
+         * User can edit his own info
+        */
         $response = $this->from('user/'. $user->id .'/edit')
-            ->actingAs($user,'web')
+            ->actingAs($user, 'web')
             ->put('user/' . $user->id, [
                 'name' => 'userName',
                 'surname' => 'userSurname',
@@ -255,7 +267,7 @@ class UserTest extends TestCase
         $this->followRedirects($response)
             ->assertViewIs('users.profile')
             ->assertViewHas([
-                'user' => $user
+                'user' => $user,
             ])
             ->assertOk();
     }
@@ -274,9 +286,11 @@ class UserTest extends TestCase
             'admin' => true
         ]);
 
-        /** admin can edit other user info */
+        /**
+         * Admin can edit other user info
+        */
         $response = $this->from('user/'. $user->id .'/edit')
-            ->actingAs($admin,'web')
+            ->actingAs($admin, 'web')
             ->put('user/' . $user->id, [
             'name' => 'userName',
             'surname' => 'userSurname',
@@ -293,13 +307,15 @@ class UserTest extends TestCase
         $this->followRedirects($response)
             ->assertViewIs('users.profile')
             ->assertViewHas([
-                'user' => $user
+                'user' => $user,
             ])
             ->assertOk();
 
-        /** admin can edit his own info */
+        /**
+         * Admin can edit his own info
+        */
         $response = $this->from('user/'. $admin->id .'/edit')
-            ->actingAs($admin,'web')
+            ->actingAs($admin, 'web')
             ->put('user/' . $admin->id, [
                 'name' => 'adminName',
                 'surname' => 'adminSurname',
@@ -316,7 +332,7 @@ class UserTest extends TestCase
         $this->followRedirects($response)
             ->assertViewIs('users.profile')
             ->assertViewHas([
-                'user' => $admin
+                'user' => $admin,
             ])
             ->assertOk();
     }
@@ -325,10 +341,10 @@ class UserTest extends TestCase
     {
         $user = User::factory()->create();
 
-        $response = $this ->put('user/' . $user->id . '/password', [
+        $response = $this->put('user/' . $user->id . '/password', [
             'password_old' => 'password',
             'password' => 'password2',
-            'password_confirmation' => 'password2'
+            'password_confirmation' => 'password2',
         ]);
 
         $user->refresh();
@@ -345,11 +361,11 @@ class UserTest extends TestCase
         $user = User::factory()->create();
 
         $response = $this->from('user/'. $user->id .'/edit')
-            ->actingAs($user,'web')
+            ->actingAs($user, 'web')
             ->put('user/' . $user->id . '/password', [
                 'password_old' => 'password',
                 'password' => 'newpassword',
-                'password_confirmation' => 'newpassword'
+                'password_confirmation' => 'newpassword',
             ]);
 
 
@@ -361,7 +377,7 @@ class UserTest extends TestCase
         $this->followRedirects($response)
             ->assertViewIs('users.profile')
             ->assertViewHas([
-                'user' => $user
+                'user' => $user,
             ])
             ->assertOk();
     }
@@ -371,11 +387,11 @@ class UserTest extends TestCase
         $user = User::factory()->create();
         $user2 = User::factory()->create();
 
-        $response = $this->actingAs($user,'web')
+        $response = $this->actingAs($user, 'web')
             ->put('user/' . $user2->id . '/password', [
                 'password_old' => 'password',
                 'password' => 'password2',
-                'password_confirmation' => 'password2'
+                'password_confirmation' => 'password2',
             ]);
 
         $user2->refresh();
@@ -391,14 +407,14 @@ class UserTest extends TestCase
     {
         $user = User::factory()->create();
         $admin = User::factory()->create([
-            'admin' => true
+            'admin' => true,
         ]);
 
         $response = $this->from('user/'. $user->id .'/edit')
-            ->actingAs($admin,'web')
+            ->actingAs($admin, 'web')
             ->put('user/' . $user->id . '/password', [
                 'password' => 'newpassword',
-                'password_confirmation' => 'newpassword'
+                'password_confirmation' => 'newpassword',
             ]);
 
         $user->refresh();
@@ -409,7 +425,7 @@ class UserTest extends TestCase
         $this->followRedirects($response)
             ->assertViewIs('users.profile')
             ->assertViewHas([
-                'user' => $user
+                'user' => $user,
             ])
             ->assertOk();
     }
@@ -417,14 +433,14 @@ class UserTest extends TestCase
     public function test_admin_user_can_not_update_his_own_password_without_old_password()
     {
         $admin = User::factory()->create([
-            'admin' => true
+            'admin' => true,
         ]);
 
         $response = $this->from('user/'. $admin->id .'/edit')
-            ->actingAs($admin,'web')
+            ->actingAs($admin, 'web')
             ->put('user/' . $admin->id . '/password', [
                 'password' => 'newpassword',
-                'password_confirmation' => 'newpassword'
+                'password_confirmation' => 'newpassword',
             ])
             ->assertSessionHasErrors([
                 'password_old',
@@ -438,7 +454,7 @@ class UserTest extends TestCase
         $this->followRedirects($response)
             ->assertViewIs('users.profile')
             ->assertViewHas([
-                'user' => $admin
+                'user' => $admin,
             ])
             ->assertOk();
     }
@@ -446,15 +462,15 @@ class UserTest extends TestCase
     public function test_admin_user_can_update_his_own_password()
     {
         $admin = User::factory()->create([
-            'admin' => true
+            'admin' => true,
         ]);
 
         $response = $this->from('user/'. $admin->id .'/edit')
-            ->actingAs($admin,'web')
+            ->actingAs($admin, 'web')
             ->put('user/' . $admin->id . '/password', [
                 'password_old' => 'password',
                 'password' => 'newpassword',
-                'password_confirmation' => 'newpassword'
+                'password_confirmation' => 'newpassword',
             ]);
 
         $admin->refresh();
@@ -465,7 +481,7 @@ class UserTest extends TestCase
         $this->followRedirects($response)
             ->assertViewIs('users.profile')
             ->assertViewHas([
-                'user' => $admin
+                'user' => $admin,
             ])
             ->assertOk();
     }
@@ -486,7 +502,7 @@ class UserTest extends TestCase
         Session::factory()->create();
         Reservation::factory(10)->create();
 
-        $response = $this->actingAs($user,'web')
+        $response = $this->actingAs($user, 'web')
             ->get('user/' . $user->id .'/reservations');
 
         $reservations = [];
@@ -495,7 +511,7 @@ class UserTest extends TestCase
             $reservations[$session->name][Carbon::parse($session->date)->format('d/m/Y H:i')][] = [
                 'id' => $reservation->id,
                 'row' => $reservation->row,
-                'column' => $reservation->column
+                'column' => $reservation->column,
             ];
         }
 
@@ -514,7 +530,7 @@ class UserTest extends TestCase
         Session::factory()->create();
         Reservation::factory(10)->create();
 
-        $response = $this->actingAs($user,'web')
+        $response = $this->actingAs($user, 'web')
             ->get('user/' . $user2->id .'/reservations');
 
         $reservations = [];
@@ -523,7 +539,7 @@ class UserTest extends TestCase
             $reservations[$session->name][Carbon::parse($session->date)->format('d/m/Y H:i')][] = [
                 'id' => $reservation->id,
                 'row' => $reservation->row,
-                'column' => $reservation->column
+                'column' => $reservation->column,
             ];
         }
 
@@ -540,12 +556,12 @@ class UserTest extends TestCase
     {
         $user = User::factory()->create();
         $admin = User::factory()->create([
-            'admin' => true
+            'admin' => true,
         ]);
         Session::factory()->create();
         Reservation::factory(10)->create();
 
-        $response = $this->actingAs($admin,'web')
+        $response = $this->actingAs($admin, 'web')
             ->get('user/' . $user->id .'/reservations');
 
         $reservations = [];
@@ -554,7 +570,7 @@ class UserTest extends TestCase
             $reservations[$session->name][Carbon::parse($session->date)->format('d/m/Y H:i')][] = [
                 'id' => $reservation->id,
                 'row' => $reservation->row,
-                'column' => $reservation->column
+                'column' => $reservation->column,
             ];
         }
 
@@ -571,12 +587,12 @@ class UserTest extends TestCase
     {
         User::factory()->create();
         $admin = User::factory()->create([
-            'admin' => true
+            'admin' => true,
         ]);
         Session::factory()->create();
         Reservation::factory(10)->create();
 
-        $response = $this->actingAs($admin,'web')
+        $response = $this->actingAs($admin, 'web')
             ->get('user/' . $admin->id .'/reservations');
 
         $reservations = [];
@@ -585,7 +601,7 @@ class UserTest extends TestCase
             $reservations[$session->name][Carbon::parse($session->date)->format('d/m/Y H:i')][] = [
                 'id' => $reservation->id,
                 'row' => $reservation->row,
-                'column' => $reservation->column
+                'column' => $reservation->column,
             ];
         }
 
@@ -613,7 +629,7 @@ class UserTest extends TestCase
 
         $this->assertEquals(1, User::count());
 
-        $response = $this->actingAs($user,'web')
+        $response = $this->actingAs($user, 'web')
             ->delete('user/' . $user->id);
 
         $this->assertEquals(0, User::count());
@@ -628,7 +644,7 @@ class UserTest extends TestCase
         $user = User::factory()->create();
         $user2 = User::factory()->create();
 
-        $response = $this->actingAs($user,'web')
+        $response = $this->actingAs($user, 'web')
             ->delete('user/' . $user2->id);
 
         $this->assertEquals(2, User::count());
@@ -642,11 +658,11 @@ class UserTest extends TestCase
     {
         $user = User::factory()->create();
         $admin = User::factory()->create([
-            'admin' => true
+            'admin' => true,
         ]);
 
         $response = $this->from('user')
-            ->actingAs($admin,'web')
+            ->actingAs($admin, 'web')
             ->delete('user/' . $user->id);
 
         $this->assertEquals(1, User::count());
@@ -660,10 +676,10 @@ class UserTest extends TestCase
     public function test_admin_user_can_not_destroy_himself()
     {
         $admin = User::factory()->create([
-            'admin' => true
+            'admin' => true,
         ]);
 
-        $response = $this->actingAs($admin,'web')
+        $response = $this->actingAs($admin, 'web')
             ->delete('user/' . $admin->id);
 
         $this->assertEquals(1, User::count());
@@ -699,7 +715,7 @@ class UserTest extends TestCase
 
         $response = $this->post('user/login', [
             'email' => $user->email,
-            'password' => 'password'
+            'password' => 'password',
         ]);
 
         $this->assertAuthenticatedAs($user);
@@ -718,12 +734,14 @@ class UserTest extends TestCase
 
         $response = $this->post('user/login', [
             'email' => $user->email,
-            'password' => 'password'
+            'password' => 'password',
         ]);
 
         $this->assertAuthenticatedAs($user);
 
-        /** redirected here by middleware guest */
+        /**
+         * Redirected here by middleware guest
+        */
         $this->followRedirects($response)
             ->assertViewIs('reservation.create')
             ->assertOk();
@@ -733,7 +751,9 @@ class UserTest extends TestCase
     {
         $response = $this->get('user/logout');
 
-        /** redirected by middleware auth */
+        /**
+         * Redirected by middleware auth
+        */
         $this->followRedirects($response)
             ->assertViewIs('reservation.create')
             ->assertOk();

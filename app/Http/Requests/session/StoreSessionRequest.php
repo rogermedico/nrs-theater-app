@@ -29,5 +29,4 @@ class StoreSessionRequest extends FormRequest
             'ticket_price' => 'nullable|integer|gt:0',
         ];
     }
-
 }

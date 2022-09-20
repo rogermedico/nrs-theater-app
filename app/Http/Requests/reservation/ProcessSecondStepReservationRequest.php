@@ -25,7 +25,7 @@ class ProcessSecondStepReservationRequest extends FormRequest
     {
         return [
             'seats' => 'required|array|min:1',
-            'seats.*' =>'required|string'
+            'seats.*' => 'required|string',
         ];
     }
 }
