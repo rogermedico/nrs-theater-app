@@ -19,6 +19,7 @@ Improvements to be taken into consideration besides these conditions will be:
  - Complete CRUD for reservations and users
  - Code organization
  - Error check
+ - Containerized application
 
 ## Project behaviour
 
@@ -98,24 +99,33 @@ the constructor, because different methods of the resource have to have differen
 The validation of the fields is always made using custom requests, as it is expected from a well-done project.
 
 ## Run Project (local environment)
+All steps tested on Ubuntu OS.
+### Needed commands
+
+Check that you have make, docker and docker-compose installed on your system running the following commands:
+- make -v
+- docker -v
+- docker-compose -v
+
+### Set up steps
 
 1. Download or clone the code in this repository
-2. Execute the ``composer install`` command to install laravel dependencies
-3. Execute ``npm install`` to install npm dependencies (Bootstrap)
-4. Execute ``npm run dev`` to compile the npm dependencies
-5. Copy env.example file to .env in the root directory
-6. Run the command ``php artisan key:generate`` to regenerate the app key
-7. Run the command ``php artisan storage:link`` to allow access to the images from public directory
-8. Create a database and fill the .env file with the correct info (DB connection)
-9. Optionally if you want to run tests: Create a second database and fill the DB_TEST_DATABASE field
- in the .env file.
-10. Seed the DB running the proper command. For example: ``php artisan migrate:refresh --seed``
-11. Execute the serve command ``php artisan serve`` or open your LAMP directory and access to the project folder
-12. Access [localhost:8000](http://localhost:8000) (typically) and see the project
+2. Execute ``make build`` to build docker containers
+3. Execute ``make run`` to actually run the containers
+4. Execute ``make prepare`` to prepare the app for the first run. This command imports composer and npm dependencies, generates .env file, generates app key, establishes symbolic link between storage and public directory, migrates the DB and generates compiled css and js files.
+
+### Acces the app
+
+If all the setup steps gone well the url to acces the app is [localhost:8080](http://localhost:8080) and the url to access the data base (phpMyAdmin) is [localhost:8081](http://localhost:8081).
+
+## Stop Project
+
+To stop the project containers just run the command
+``make stop`` or if you want to remove all stopped containers and networks run ``make down``.
 
 ## Tests
 
-To run the tests you have to execute the following command ``php artisan test``.
+To run the tests you have to execute the following command ``make test``.
 Due to the lack of time, only the user tests have been made.
 
 ## TO DO
