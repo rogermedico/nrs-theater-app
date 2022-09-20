@@ -116,7 +116,7 @@ Check that you have make, docker and docker-compose installed on your system run
 
 ### Acces the app
 
-If all the setup steps gone well the url to acces the app is [localhost:8080](http://localhost:8080) and the url to access the data base (phpMyAdmin) is [localhost:8081](http://localhost:8081).
+If all the setup steps gone well the url to acces the app is [localhost:8080](http://localhost:8080) and the url to access the data base (phpMyAdmin) is [localhost:8081](http://localhost:8081) (user: root, password: password).
 
 ## Stop Project
 
