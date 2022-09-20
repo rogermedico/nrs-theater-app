@@ -11,6 +11,8 @@ services:
       - 8080:80
     volumes:
       - .docker/apache/000-default_dev.conf:/etc/apache2/sites-available/000-default.conf:ro
+      - .docker/php/conf/memory_limit.ini:/usr/local/etc/php/conf.d/memory_limit.ini:ro
+      - .docker/php/conf/xdebug.ini:/usr/local/etc/php/conf.d/xdebug.ini:ro
       - ./:/var/www
     depends_on:
       - db
