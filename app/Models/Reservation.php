@@ -31,4 +31,13 @@ class Reservation extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    public function stringify(): string
+    {
+        return $this->session_id
+            . '-'
+            . $this->row
+            . '-'
+            . $this->column;
+    }
 }
