@@ -2,14 +2,17 @@
 
 namespace Database\Factories;
 
+use App\Models\Reservation;
 use App\Models\Session;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class ReservationFactory extends Factory
 {
+    protected $model = Reservation::class;
 
     private $reservationsAlreadyDone = [];
+
     /**
      * Define the model's default state.
      *
@@ -17,18 +20,17 @@ class ReservationFactory extends Factory
      */
     public function definition(): array
     {
-        $uniqueSessionRowColumn = $this->assureUniqueSessionRowColumn();
         return [
+            ...$this->assureUniqueSessionRowColumn(),
             'user_id' => User::all()->random()->id,
-            'session_id' => $uniqueSessionRowColumn['session_id'],
-            'row' => $uniqueSessionRowColumn['row'],
-            'column' => $uniqueSessionRowColumn['column'],
         ];
     }
 
     private function assureUniqueSessionRowColumn(): array
     {
-        do{
+        $this->getAlreadyDoneReservations();
+
+        do {
             $session = Session::all()->random()->id;
             $row = rand(1, env('THEATER_MAX_ROWS'));
             $column = rand(1, env('THEATER_MAX_COLUMNS'));
@@ -43,4 +45,12 @@ class ReservationFactory extends Factory
         ];
     }
 
+    private function getAlreadyDoneReservations()
+    {
+        if (empty($this->reservationsAlreadyDone)) {
+            Reservation::all()->each(function ($reservation) {
+                $this->reservationsAlreadyDone[] = $reservation->stringify();
+            });
+        }
+    }
 }
