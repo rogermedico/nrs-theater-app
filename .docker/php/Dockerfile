@@ -1,4 +1,4 @@
-FROM php:7.4-apache
+FROM php:8.1.10-apache
 
 ARG USERNAME=appuser
 ARG UID
@@ -32,4 +32,3 @@ COPY .docker/apache/000-default_dev.conf /etc/apache2/sites-available/000-defaul
 RUN sed -ri -e 's!/var/www/!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/apache2.conf /etc/apache2/conf-available/*.conf
 
 COPY .docker/php/conf/xdebug.ini /usr/local/etc/php/conf.d/xdebug.ini
-RUN rm -rf /usr/local/etc/php/conf.d/opcache.ini
